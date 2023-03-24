@@ -28,6 +28,9 @@ Be aware every function runs based on the configuration file, e.g. stopping maps
 
 ## How to get started? 
 
+Download the pre-compiled application here: https://github.com/microsoft/Dual-write-automations/releases/
+or clone the repo and compile it on your machine. 
+
 1. Setup an environment with Dual-Write and the maps how you need/ want it
 2. Export the configuration with the tool
 3. Apply on other environments based on the config with the tool. 
