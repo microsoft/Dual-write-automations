@@ -1,3 +1,5 @@
+:: Copyright (c) Microsoft Corporation.
+:: Licensed under the MIT License.
 DWHelperCMD.exe -u "username@somewhere.com" -p "password" -e "yourenvironment.cloudax.dynamics.com" --mfasecret "mfa secret" -c "your config.config", --runmode "deployment" --nosolutions --useadowikiupload --adotoken "your personal access token"
 
 

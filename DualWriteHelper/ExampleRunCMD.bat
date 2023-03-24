@@ -1,3 +1,5 @@
+:: Copyright (c) Microsoft Corporation.
+:: Licensed under the MIT License.
 DWHelperCMD.exe -u "username" -p "password" -e "environment"
 
 ::--runmode "deployment" --runmode "deployment" --runmode "deployInitialSync", Values: deployment, deployInitialSync, start, stop, pause export //overwrites the runmode in the config 
