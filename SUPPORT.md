@@ -6,8 +6,7 @@ This project uses GitHub Issues to track bugs and feature requests. Please searc
 issues before filing new issues to avoid duplicates.  For new issues, file your bug or 
 feature request as a new Issue.
 
-For help and questions about using this project, please raise an issue on the issue section. 
-The Wiki will be updates with an FAQ based on the questions received. 
+For help and questions about using this project, please move to the discussions section.
 
 ## Microsoft Support Policy  
 
