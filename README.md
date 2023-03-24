@@ -30,9 +30,10 @@ Be aware every function runs based on the configuration file, e.g. stopping maps
 
 1. Setup an environment with Dual-Write and the maps how you need/ want it
 2. Export the configuration with the tool
-3. Apply on other environments based on the config. 
+3. Apply on other environments based on the config with the tool. 
 
 Please refer to the Wiki page where the steps are described in details.
+--> https://github.com/microsoft/Dual-write-automations/wiki
 
 ## Contributing
 
