@@ -4,8 +4,12 @@
 Please note that this is not supported by Microsoft in anyway. 
 It is provided AS IS and it can break anytime because changes made in the API beeing used. 
 
-
 ## What can this tool do? 
+
+Mainly this tool is intended as a utility to help save time during Dual-write setup and mainance tasks.
+It doesen't look the prettiest but it does the job.
+
+This is what it can do:
 
 -	Apply the latest map version based on authors or any author
 -	Apply integration keys

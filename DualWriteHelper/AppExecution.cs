@@ -161,49 +161,6 @@ namespace DWHelper
 
             EdgeUniversal uni = new EdgeUniversal(logger);
             uni.getToken();
-
-            //switch(version.ProductMajorPart)
-            //{
-            //    case 106:
-            //        EdgeMain main = new EdgeMain(logger);
-            //        main.getToken();
-            //        break;
-
-            //    //case 104:
-            //    //    Edge104 edge104 = new Edge104();
-            //    //    edge104.getToken();
-            //    //    break;
-
-            //    //case 105:
-            //    //    Edge105 edge103 = new Edge105(logger);
-            //    //    edge103.getToken();
-            //    //    break;
-
-
-            //    //case 102:
-            //    //    Edge106 edge106 = new Edge106();
-            //    //    edge106.getToken();
-            //    //    break;
-            //    //case 101:
-            //    //    Edge101 edge101 = new Edge101();
-            //    //    edge101.getToken();
-            //    //    break;
-
-            //        //try run any other instance with main
-            //    default:
-            //        EdgeMain main2 = new EdgeMain(logger);
-            //        main2.getToken();
-            //        break;
-
-            //        //outdated
-            //        //case 100:
-            //        //    Edge100 edge100 = new Edge100();
-            //        //    edge100.getToken();
-            //        //    break;
-            //}
-
-           
-
         }
         
 
