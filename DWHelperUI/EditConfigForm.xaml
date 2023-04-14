@@ -107,8 +107,9 @@
 
                 
                 <StackPanel Margin="20 10" Orientation="Vertical" Grid.Column="0" Grid.Row="5">
-                    
+                    <TextBlock Text="Map configs" Foreground="#000" FontSize="13" Margin="0 0 0 8"/>
                     <StackPanel Orientation="Horizontal">
+                        
                         <TextBox Name="SearchString" Width="200" Height="30"/>
                         <Button Content="Filter" Margin="5" Height="30" Width="50" Click="Filter_Click"/>
                         <Button Content="Clear" Margin="5" Height="30" Width="50" Click="ClearFilter_Click" />

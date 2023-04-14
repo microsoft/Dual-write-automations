@@ -30,10 +30,13 @@
       <Value Profile="(Default)">All</Value>
     </Setting>
     <Setting Name="configName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">DWHelper.dll.config</Value>
+      <Value Profile="(Default)">DWHelperCMD.dll.config</Value>
     </Setting>
     <Setting Name="logLevel" Type="System.String" Scope="User">
       <Value Profile="(Default)">Information</Value>
+    </Setting>
+    <Setting Name="exportOption" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Default</Value>
     </Setting>
   </Settings>
 </SettingsFile>

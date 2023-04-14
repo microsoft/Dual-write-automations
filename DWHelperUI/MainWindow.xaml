@@ -100,11 +100,11 @@
             <TextBlock Grid.Row="5" Grid.ColumnSpan="3" Text="Settings" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20 0 0 2" FontSize="12" FontWeight="SemiBold" Foreground="#000"/>
             <Separator Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Height="0.7" Margin="150 20 20 20" Background="#E1E6EB"/>
 
-            <StackPanel Margin="20 10" Grid.Column="0" Grid.Row="6">
+            <StackPanel Margin="20 10" Grid.Column="0" Grid.Row="6" Name="applySolutionPanel">
                 <CheckBox x:Name="applySolutions" IsChecked="{Binding applySolutionCheckbox, Source={x:Static props:Settings.Default}}"  Foreground="#000" FontSize="13"  Content="Apply Solutions"  />
             </StackPanel>
 
-            <StackPanel Margin="20 10" Grid.Column="1" Grid.Row="6">
+            <StackPanel Margin="20 10" Grid.Column="1" Grid.Row="6" Name="adowikiuploadpanel">
                 <CheckBox x:Name="adowikiupload" IsChecked="{Binding adowikiupload, Source={x:Static props:Settings.Default}}" Foreground="#000" FontSize="13" Content="ADO Wiki upload" />
                 <!--<CheckBox x:Name="exportConfig" IsChecked="{Binding exportConfig, Source={x:Static props:Settings.Default}}" Foreground="#000" FontSize="13" Content="Export configuration with status" />
                 <ComboBox x:Name="exportStatus" Margin="5" SelectedItem="{Binding exportStatus, Source={x:Static props:Settings.Default}}">
@@ -136,6 +136,10 @@
                         <System:String>All</System:String>
                         <System:String>Running</System:String>
                         <System:String>Stopped</System:String>
+                    </ComboBox>
+                    <TextBlock Text="Additional export options"></TextBlock>
+                    <ComboBox x:Name="exportOption" SelectedValuePath="Value" DisplayMemberPath="Description">
+                       
                     </ComboBox>
                 </StackPanel>
             </StackPanel>

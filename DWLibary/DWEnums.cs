@@ -19,6 +19,7 @@ namespace DWLibary
             sequential
         };
 
+
         public enum StartStop
         {
             none,
@@ -39,7 +40,8 @@ namespace DWLibary
             Paused = 5,
             //Paused = 4,
             NotRunning = 6,
-            Keep = 99
+            Keep = 99,
+            All = 100
         };
 
         public enum RequestStatus
@@ -56,6 +58,14 @@ namespace DWLibary
             stop
 
         };
+
+        public enum ExportOptions
+        {
+            [Description("Default export, any Author, latest version")]
+            Default = 0,
+            [Description("Exact version & author")]
+            precise = 1,
+        }
 
         public enum DWSyncDirection
         {
