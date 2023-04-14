@@ -7,7 +7,7 @@ It is provided AS IS and it can break anytime because changes made in the API be
 If you need support or assistance, please use the "Discussions" section in this repo. 
 https://github.com/microsoft/Dual-write-automations/discussions
 
-##Feedback
+## Feedback
 
 Feedback is essential - good or bad, please do not hesitate to provide Feedback in the Discussions section: 
 https://github.com/microsoft/Dual-write-automations/discussions
