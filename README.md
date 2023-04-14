@@ -4,6 +4,14 @@
 Please note that this is not supported by Microsoft in anyway. 
 It is provided AS IS and it can break anytime because changes made in the API beeing used. 
 
+If you need support or assistance, please use the "Discussions" section in this repo. 
+https://github.com/microsoft/Dual-write-automations/discussions
+
+##Feedback
+
+Feedback is essential - good or bad, please do not hesitate to provide Feedback in the Discussions section: 
+https://github.com/microsoft/Dual-write-automations/discussions
+
 ## What can this tool do? 
 
 Mainly this tool is intended as a utility to help save time during Dual-write setup and mainance tasks.
