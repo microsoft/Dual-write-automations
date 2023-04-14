@@ -15,9 +15,16 @@ namespace DWHelper
     internal class ArgsHandler
     {
         public Options parsedOptions;
+
         public void parseCommands(string[] args)
         {
-            CommandLine.Parser.Default.ParseArguments<Options>(args)
+
+            var parser = new CommandLine.Parser(s =>
+            {
+                s.CaseSensitive = false;
+                s.CaseInsensitiveEnumValues = true;
+            });
+            parser.ParseArguments<Options>(args)
            .WithParsed<Options>(o => {
                // parsing successful; go ahead and run the app
                GlobalVar.username = o.username;
@@ -28,25 +35,9 @@ namespace DWHelper
                GlobalVar.useadowikiupload= o.useadowikiupload;
                GlobalVar.adotoken = o.adotoken;
 
-               if(o.status != null && o.status != String.Empty)
-               {
-                  // GlobalVar.exportConfig = true;
-
-                   GlobalVar.exportState = DWEnums.GetValueFromDescription<DWEnums.MapStatus>(o.status);
-
-               }
-
-               if(o.runmode != null)
-               {
-                   DWEnums.RunMode parsed;
-                   Enum.TryParse<DWEnums.RunMode>(o.runmode, out parsed);
-
-                   GlobalVar.runMode = parsed;
-
-                    
-
-
-               }
+               GlobalVar.runMode = o.runmode;
+               GlobalVar.exportState = o.status;
+               GlobalVar.exportOption = o.exportOption;
 
                GlobalVar.noSolutions = o.noSolutions;
 
@@ -81,8 +72,8 @@ namespace DWHelper
         [Option('c', "config", HelpText = "define what config to use for execution", Default = "")]
         public string configFileName { get; set; }
 
-        [Option('s', Default ="", HelpText = "Status for export, values Running, All, Stopped")]
-        public string status { get; set; }
+        [Option('s', Default = DWEnums.MapStatus.None, HelpText = "Status for export, values Running, All, Stopped")]
+        public DWEnums.MapStatus status { get; set; }
 
         [Option('l', Default = "", HelpText = "Log level, values Debug, Information, Error")]
         public string logLevel { get; set; }
@@ -90,8 +81,8 @@ namespace DWHelper
         [Option("nosolutions", Default =false, HelpText = "Prevents solutions from beeing applied")]
         public bool noSolutions { get; set; }
 
-        [Option("runmode", HelpText = "Overwrites the runmode in the config file, possible: deployment, deployInitialSync, start, stop, pause, export")]
-        public string runmode { get; set; }
+        [Option("runmode",Default = DWEnums.RunMode.none, HelpText = "Overwrites the runmode in the config file, possible: deployment, deployInitialSync, start, stop, pause, export")]
+        public DWEnums.RunMode runmode { get; set; }
 
         [Option("mfasecret", Default ="", HelpText = "Overwrites the mfasecret in the config file, usable in deployment pipelines when the secret is storerd in a key vault")]
         public string mfasecret { get; set; }
@@ -101,6 +92,9 @@ namespace DWHelper
 
         [Option("adotoken", Default ="", HelpText = "Overwrites the AccessToken in the config file for ADO Wiki uploads, usable in deployment pipelines when the secret is storerd in a key vault")]
         public string adotoken { get; set; }
+
+        [Option('o', Default = DWEnums.ExportOptions.Default, HelpText = "Additional options for export")]
+        public DWEnums.ExportOptions exportOption { get; set; }
 
     }
 }

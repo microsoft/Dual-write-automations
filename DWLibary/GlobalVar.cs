@@ -23,6 +23,7 @@ namespace DWLibary
 
         //public static bool exportConfig { get; set; }
         public static DWEnums.MapStatus exportState { get; set; }
+        public static DWEnums.ExportOptions exportOption { get; set; }
 
         public static DWEnums.RunMode runMode { get; set; }
         public static DWEnums.ExecutionMode executionMode { get; set; }

@@ -11,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 using DWHelper;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.Services.Common.CommandLine;
-using OpenQA.Selenium.DevTools.V105.Debugger;
 using Serilog;
 
 
@@ -50,7 +49,7 @@ using (StreamReader sr = new StreamReader(@"DEBUGArgs.txt"))
         argsList.Add(value);
 
         if (value == "--runmode")
-            argsList.Add("deployInitialSync");
+            argsList.Add("start");
 
     }
 

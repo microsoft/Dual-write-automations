@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using static Azure.Core.HttpHeader;
@@ -229,18 +230,19 @@ namespace DWLibary.Engines
             //Debug Logging >>
             logger.LogDebug($"Response: {responseStr} {content}");
             //Debug Logging <<
-
-
-            var solutions  = JsonConvert.DeserializeObject<List<DWSolution>>(content);
-
-            if (solutions != null)
+            if (responseStr.IsSuccessStatusCode)
             {
-                foreach (var solution in solutions)
+                var solutions = JsonConvert.DeserializeObject<List<DWSolution>>(content);
+
+                if (solutions != null)
                 {
-                    Solution retSol = new Solution();
-                    retSol.Name = solution.uniquename;
-                    
-                    ret.Add(retSol);
+                    foreach (var solution in solutions)
+                    {
+                        Solution retSol = new Solution();
+                        retSol.Name = solution.uniquename;
+
+                        ret.Add(retSol);
+                    }
                 }
             }
             return ret;

@@ -128,7 +128,7 @@ namespace DWLibary.Engines
             dwMaps = await common.getDWMaps();
 
 
-            if (GlobalVar.exportState == DWEnums.MapStatus.None)
+            if (GlobalVar.exportState == DWEnums.MapStatus.All)
             {
                 logger.LogInformation("Initalizing maps for exporting all");
                 await initAllMaps();
@@ -230,76 +230,10 @@ namespace DWLibary.Engines
             }
 
             await writeNewConfigFile(finalSortOrder);
-           // await writeXML(finalSortOrder);
 
 
         }
-        //ChatGPT improvement
-        //public async Task generateMapConfig()
-        //{
-        //    List<DWMap> finalSortOrder = new List<DWMap>();
-
-        //    dwMaps = await common.getDWMaps();
-
-        //    using var enumerator = dwMaps.GetEnumerator();
-        //    List<DWMap> tmpList = new List<DWMap>();
-        //    logger.LogInformation("Getting dependencies.. this might take a while");
-        //    while (enumerator.MoveNext())
-        //    {
-        //        DWMap item = (DWMap)enumerator.Current;
-        //        item.dependency = await getTemplatePreRequisite(item.detail.template.id);
-        //        tmpList.Add(item);
-        //    }
-        //    dwMaps = tmpList;
-
-        //    logger.LogInformation("Dependencies retrived, sorting maps");
-        //    int dependencyAmount = 0;
-
-        //    while (dwMaps.Any())
-        //    {
-        //        var currentDep = dwMaps.Where(x => x.dependency.Count.Equals(dependencyAmount)).ToList();
-
-        //        foreach (DWMap map in currentDep)
-        //        {
-        //            if (await CheckValidDependency(map, finalSortOrder))
-        //            {
-        //                finalSortOrder.Add(map);
-        //                dwMaps.Remove(map);
-        //            }
-        //        }
-
-        //        dependencyAmount++;
-
-        //        if (dependencyAmount > 200)
-        //        {
-        //            logger.LogWarning("Couldn't map all maps in the correct order, remaining maps are added at the end.");
-        //            //break
-        //            foreach (DWMap map in currentDep)
-        //            {
-        //                finalSortOrder.Add(map);
-        //            }
-
-        //            break;
-        //        }
-        //    }
-
-        //    await writeXML(finalSortOrder);
-        //}
-
-        //private async Task<bool> CheckValidDependency(DWMap map, List<DWMap> finalSortOrder)
-        //{
-        //    bool okToAdd = true;
-        //    foreach (DWMap dep in map.dependency)
-        //    {
-        //        var lookup = finalSortOrder.Where(x => x.detail.template.id.Equals(dep.detail.template.id)).Any();
-        //        if (!lookup)
-        //        {
-        //            okToAdd = false;
-        //            break;
-        //        }
-        //    }
-        //    return okToAdd;
-        //}
+       
         private async Task writeNewConfigFile(List<DWMap> maps)
         {
 
@@ -326,7 +260,7 @@ namespace DWLibary.Engines
                 MapConfig lookup =lookupList.Where(x=>x.mapName.Equals(map.detail.tName)).FirstOrDefault();
 
                 conf.mapName = map.detail.tName;
-                conf.version = lookup != null ? lookup.version : "latest";
+                conf.version = getExportVersion(lookup);
                 conf.authorsStr = getAuthorString(lookup != null ? lookup.authors : null);
                 conf.keysStr = await common.getCurrentKeys(currentMap);
                 conf.group = lookup != null ? lookup.group : "All";
@@ -350,51 +284,72 @@ namespace DWLibary.Engines
 
         }
 
-
-
-        private async Task writeXML(List<DWMap> maps)
+        private string getExportVersion(MapConfig _lookup = null)
         {
-            XmlWriterSettings setting = new XmlWriterSettings();
-            setting.ConformanceLevel = ConformanceLevel.Auto;
-            setting.Indent = true;
-            //setting.NewLineOnAttributes = true;
-            setting.Encoding =  Encoding.UTF8;
+            string ret = String.Empty;
 
-            string fileName = $"{DateTime.Now.ToString("yyyy-MM-dd HH-mm")}_export_{GlobalVar.foEnv}.xml";
-            logger.LogInformation($"Generating map into {fileName}");
-            using (XmlWriter writer = XmlWriter.Create(fileName, setting))
+            if(GlobalVar.exportOption == DWEnums.ExportOptions.precise)
             {
-                writer.WriteStartElement("MapConfigs");
-                foreach (var map in maps)
-                {
-
-
-                    if(GlobalVar.exportState != DWEnums.MapStatus.None)
-                    {
-                        if(map.detail.mapStatus != GlobalVar.exportState)
-                        {
-                            logger.LogInformation($"Export of map {map.detail.tName} skipped as its in status {map.detail.mapStatus} and only status {GlobalVar.exportState} will be exported!");
-                            continue;
-                        }
-                    }
-
-                    currentMap = map;
-                    writer.WriteStartElement("Map");
-                    writer.WriteAttributeString("mapName", map.detail.tName);
-                    writer.WriteAttributeString("version", "latest");
-                    writer.WriteAttributeString("authors", getAuthorString());
-                    writer.WriteAttributeString("keys", await common.getCurrentKeys(currentMap));
-                    writer.WriteAttributeString("group", "");
-                    writer.WriteAttributeString("master", "CE");
-                    writer.WriteEndElement();
-                }
-                writer.WriteEndElement();
-                
-                writer.Flush();
+                ret = $"{currentMap.detail.template.version.major}.{currentMap.detail.template.version.minor}.{currentMap.detail.template.version.build}.{currentMap.detail.template.version.revision}";
+            }
+            else
+            {
+                if (_lookup != null)
+                    ret = _lookup.version;
+                else
+                    ret = "latest";
             }
 
-            logger.LogInformation($"Generating map successful");
+            return ret;
+
+
         }
+
+
+
+        //private async Task writeXML(List<DWMap> maps)
+        //{
+        //    XmlWriterSettings setting = new XmlWriterSettings();
+        //    setting.ConformanceLevel = ConformanceLevel.Auto;
+        //    setting.Indent = true;
+        //    //setting.NewLineOnAttributes = true;
+        //    setting.Encoding =  Encoding.UTF8;
+
+        //    string fileName = $"{DateTime.Now.ToString("yyyy-MM-dd HH-mm")}_export_{GlobalVar.foEnv}.xml";
+        //    logger.LogInformation($"Generating map into {fileName}");
+        //    using (XmlWriter writer = XmlWriter.Create(fileName, setting))
+        //    {
+        //        writer.WriteStartElement("MapConfigs");
+        //        foreach (var map in maps)
+        //        {
+
+
+        //            if(GlobalVar.exportState != DWEnums.MapStatus.None)
+        //            {
+        //                if(map.detail.mapStatus != GlobalVar.exportState)
+        //                {
+        //                    logger.LogInformation($"Export of map {map.detail.tName} skipped as its in status {map.detail.mapStatus} and only status {GlobalVar.exportState} will be exported!");
+        //                    continue;
+        //                }
+        //            }
+
+        //            currentMap = map;
+        //            writer.WriteStartElement("Map");
+        //            writer.WriteAttributeString("mapName", map.detail.tName);
+        //            writer.WriteAttributeString("version", "latest");
+        //            writer.WriteAttributeString("authors", getAuthorString());
+        //            writer.WriteAttributeString("keys", await common.getCurrentKeys(currentMap));
+        //            writer.WriteAttributeString("group", "");
+        //            writer.WriteAttributeString("master", "CE");
+        //            writer.WriteEndElement();
+        //        }
+        //        writer.WriteEndElement();
+                
+        //        writer.Flush();
+        //    }
+
+        //    logger.LogInformation($"Generating map successful");
+        //}
 
         //moved to CommonEngine
         //private async Task<string> getCurrentKeys()
@@ -430,23 +385,32 @@ namespace DWLibary.Engines
             List<string> authors = new List<string>();
             string ret = String.Empty;
 
-            foreach(DWMapTemplate template in currentMap.detail.templates)
+            if (GlobalVar.exportOption == DWEnums.ExportOptions.precise)
             {
+                ret = currentMap.detail.template.author;
+            }
+            else
+            {
+                foreach (DWMapTemplate template in currentMap.detail.templates)
+                {
 
-                string lookup = authors.FirstOrDefault(x => x.Equals(template.author));
+                    string lookup = authors.FirstOrDefault(x => x.Equals(template.author));
 
-                if(lookup == null)
-                    authors.Add(template.author);
+                    if (lookup == null)
+                        authors.Add(template.author);
+
+                }
+
+                if (concatAuthors != null && concatAuthors.Any())
+                    authors = authors.Concat(concatAuthors).ToList();
+
+                ret = String.Join(",", authors);
+
+                if (ret == String.Empty)
+                    ret = "Any";
 
             }
 
-            if(concatAuthors != null && concatAuthors.Any())
-                authors = authors.Concat(concatAuthors).ToList();
-
-            ret = String.Join(",", authors);
-
-            if (ret == String.Empty)
-                ret = "Any";
 
             return ret;
         }

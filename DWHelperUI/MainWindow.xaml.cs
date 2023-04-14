@@ -207,6 +207,13 @@ namespace DWHelperUI
 
             }
 
+            DWEnums.ExportOptions localExportOption = (DWEnums.ExportOptions)exportOption.SelectedValue;
+            if (localExportOption != DWEnums.ExportOptions.Default)
+            {
+                ret.Add("-o");
+                ret.Add($"\"{localExportOption}\"");
+            }
+
             if (applySolutions.IsChecked == false)
             {
                 ret.Add("--nosolutions");
@@ -260,7 +267,7 @@ namespace DWHelperUI
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-
+            Properties.Settings.Default.exportOption = exportOption.SelectedValue.ToString();
             Properties.Settings.Default.runmode = runMode.SelectedValue.ToString();
             Properties.Settings.Default.Save();
             base.OnClosing(e);
@@ -322,6 +329,8 @@ namespace DWHelperUI
             string selectedItem = envList.SelectedItem.ToString();
 
             envURL.Text = selectedItem;
+
+            setHyperlinkURL();
         }
 
         private void initConfigFiles()
@@ -379,6 +388,8 @@ namespace DWHelperUI
         }
         private void initEnums()
         {
+
+            //Init RunMode
             runMode.Items.Clear();
             runMode.ItemsSource = System.Enum.GetValues(typeof(DWLibary.DWEnums.RunMode));
 
@@ -389,20 +400,35 @@ namespace DWHelperUI
                 Value = rm,
                 Description = DWEnums.DescriptionAttr<DWEnums.RunMode>(rm)
             });
-
-            // var selectedItem = (KeyValuePair<string, string>)Properties.Settings.Default.runmode;
-            //runMode.SelectedItem
             DWEnums.RunMode selected; 
-             var selectEnum = Enum.TryParse<DWEnums.RunMode>(Properties.Settings.Default.runmode,true, out selected);
+            Enum.TryParse<DWEnums.RunMode>(Properties.Settings.Default.runmode,true, out selected);
             foreach (dynamic item in runMode.Items)
             {
                 if (item.Value == selected)
                     runMode.SelectedItem = item;
             }
-            //runMode.SelectedItem = runMode.Items.ca
-            // runMode.SelectedItem = DWEnums.GetValueFromDescription<DWEnums.RunMode>(Properties.Settings.Default.runmode);
+   
 
 
+            //Get Export Options
+            exportOption.Items.Clear();
+            exportOption.ItemsSource = System.Enum.GetValues(typeof(DWLibary.DWEnums.ExportOptions));
+
+            exportOption.ItemsSource = Enum.GetValues(typeof(DWEnums.ExportOptions))
+            .Cast<DWEnums.ExportOptions>()
+            .Select(rm => new
+            {
+                Value = rm,
+                Description = DWEnums.DescriptionAttr<DWEnums.ExportOptions>(rm)
+            });
+
+            DWEnums.ExportOptions selectedExportOptions;
+            Enum.TryParse<DWEnums.ExportOptions>(Properties.Settings.Default.exportOption, true, out selectedExportOptions);
+            foreach (dynamic item in exportOption.Items)
+            {
+                if (item.Value == selectedExportOptions)
+                    exportOption.SelectedItem = item;
+            }
 
         }
 
@@ -415,13 +441,17 @@ namespace DWHelperUI
                 case DWEnums.RunMode.export:
                     exportSettings.Visibility = Visibility.Visible;
                     applySolutions.IsEnabled = false;
+                    applySolutionPanel.Visibility = Visibility.Collapsed;
                     adowikiupload.IsEnabled = false;
+                    adowikiuploadpanel.Visibility = Visibility.Collapsed;
                     break;
 
 
                 default:
                     applySolutions.IsEnabled = true;
+                    applySolutionPanel.Visibility = Visibility.Visible;
                     adowikiupload.IsEnabled = true;
+                    adowikiuploadpanel.Visibility = Visibility.Visible;
                     exportSettings.Visibility = Visibility.Collapsed;
                     break;
             }
