@@ -73,7 +73,7 @@ namespace DWLibary.Engines
             previousTemplate = _previousTemplate;
 
             logger = _logger;
-            this.previousTemplate = previousTemplate;
+            
            // requiredReload = _requiresReload;
             pauseResumeMaps = new List<DWMap>();
             common = new DWCommonEngine(_env,_logger);
@@ -101,12 +101,19 @@ namespace DWLibary.Engines
 
         private void addError(string _errorMessage, string prefix = "")
         {
-
+            
             if (localErrors == null)
                 localErrors = new List<ErrorMessage>();
 
             ErrorMessage message = new ErrorMessage();
             message.error = _errorMessage;
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                message.error += "\nStacktrace:\n";
+                message.error += Environment.StackTrace;
+            }
+
             message.prefix = prefix;
 
 
@@ -534,13 +541,14 @@ namespace DWLibary.Engines
                     }
 
                     //check init maps
-                   
-
+                    //make sure previous template is always assigned
+                    previousTemplate = currentMap.detail.template;
+                    logger.LogInformation($"{prefix} Previous template ID {previousTemplate.id}");
 
                     //version differs //not for start, stop, pause actions
                     if (await mapChanged())
                     {
-                        previousTemplate = currentMap.detail.template;
+                        //previousTemplate = currentMap.detail.template;
 
                         switch(GlobalVar.executionMode)
                         {
@@ -1582,7 +1590,7 @@ namespace DWLibary.Engines
 
             if(hasCurError && previousTemplate.id != null && _startStop == DWEnums.StartStop.start)
             {
-
+                logger.LogInformation($"{prefix} Previous template ID {previousTemplate.id}");
                 //Add error to the global log
                 moveErrorsToGlobalVar();
 
@@ -1595,6 +1603,7 @@ namespace DWLibary.Engines
                 await startStopMap(_startStop, _skipInitalSync);
 
                 addError($"Previous map template has been applied due to errors ", prefix);
+                moveErrorsToGlobalVar();
 
             }
             else if (hasCurError && previousTemplate.id == null && _startStop == DWEnums.StartStop.start)
@@ -1918,7 +1927,7 @@ namespace DWLibary.Engines
             }
 
             if (major != 0)
-                localTmps = localTmps.Where(x => x.version.major.Equals(major)).Where(x => x.version.minor.Equals(minor)).Where(x => x.version.Equals(build)).Where(x => x.version.revision.Equals(revision)).ToList();
+                localTmps = localTmps.Where(x => x.version.major.Equals(major)).Where(x => x.version.minor.Equals(minor)).Where(x => x.version.build.Equals(build)).Where(x => x.version.revision.Equals(revision)).ToList();
 
             //order the maps by version
 

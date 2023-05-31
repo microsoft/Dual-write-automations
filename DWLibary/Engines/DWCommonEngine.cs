@@ -131,7 +131,9 @@ namespace DWLibary.Engines
 
             foreach (var env in connectionSet.environments)
             {
-                if (env.Value.targetType == "CRM" && data == DWEnums.DataMaster.CE)
+                if ((env.Value.targetType == "CRM" 
+                    || env.Value.targetType.Contains("CDS")) //fix integration keys not exported
+                    && data == DWEnums.DataMaster.CE)
                 {
                     ret = env.Value;
                     break;
