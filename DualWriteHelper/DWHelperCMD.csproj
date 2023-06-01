@@ -28,9 +28,9 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug'">
-    <None Update="TEST.config" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TEST.config" CopyToOutputDirectory="Never" />
     <None Update="DEMO.config" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="DEBUGArgs.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="DEBUGArgs.txt" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
   <ItemGroup>
