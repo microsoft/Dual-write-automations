@@ -4,8 +4,6 @@
 using DWLibary.Struct;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using OpenQA.Selenium.DevTools.V105.Debugger;
-using OpenQA.Selenium.DevTools.V105.Runtime;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
