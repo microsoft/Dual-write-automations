@@ -10,7 +10,7 @@
         Width="1150" Height="790" MinWidth="1150" MinHeight="790" WindowStyle="ThreeDBorderWindow"
         WindowStartupLocation="CenterScreen"  Background="Transparent" Closing="Window_Closing">
 
-    <Border CornerRadius="5" Background="#ffffff" MouseDown="Grid_MouseDown" MouseLeftButtonDown="Grid_MouseLeftButtonDown">
+    <Border Background="#ffffff" MouseDown="Grid_MouseDown" MouseLeftButtonDown="Grid_MouseLeftButtonDown">
 
 
             
@@ -29,11 +29,13 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
 
+                    <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
 
@@ -55,7 +57,7 @@
 
 
 
-                <StackPanel Margin="20 10" Orientation="Vertical" Grid.Column="0" Grid.Row="2">
+                <StackPanel Margin="20 10" Orientation="Vertical" Grid.Column="0" Grid.Row="2" >
                     <TextBlock Text="ADO Wiki upload settings" Foreground="#000" FontSize="13" Margin="0 0 0 8"/>
                     <DataGrid  Grid.Column="0" Grid.Row="4" x:Name="adoSettings" IsReadOnly="False" CanUserAddRows="false">
                         <!--<DataGridTextColumn Header="Column 1" Binding="{Binding Key}" />
@@ -74,7 +76,7 @@
 
                 <StackPanel Margin="20 10" Orientation="Vertical" Grid.Column="0" Grid.Row="4">
                     <TextBlock Text="Groups" Foreground="#000" FontSize="13" Margin="0 0 0 8"/>
-                    <DataGrid  Grid.Column="0" Grid.Row="4" x:Name="groups" IsReadOnly="False" CanUserAddRows="true">
+                    <DataGrid  Grid.Column="0" Grid.Row="4" x:Name="groups" IsReadOnly="False" CanUserAddRows="true" CanUserResizeColumns="True">
                         <!--<DataGridTextColumn Header="Column 1" Binding="{Binding Key}" />
                 <DataGridTextColumn Header="Column 2" Binding="{Binding Value}" />-->
                     </DataGrid>
@@ -107,15 +109,31 @@
 
                 
                 <StackPanel Margin="20 10" Orientation="Vertical" Grid.Column="0" Grid.Row="5">
+                    
                     <TextBlock Text="Map configs" Foreground="#000" FontSize="13" Margin="0 0 0 8"/>
                     <StackPanel Orientation="Horizontal">
-                        
+
                         <TextBox Name="SearchString" Width="200" Height="30"/>
                         <Button Content="Filter" Margin="5" Height="30" Width="50" Click="Filter_Click"/>
                         <Button Content="Clear" Margin="5" Height="30" Width="50" Click="ClearFilter_Click" />
                     </StackPanel>
-                    <DataGrid x:Name="mapConfig" Grid.Column="0" Grid.Row="6" IsReadOnly="False"  MaxHeight="500" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MaxWidth="1000" FontSize="12"/>
+                    
+
+                        
+                        
+
                 </StackPanel>
+                <StackPanel Margin="20 10" Grid.Column="0" Grid.Row="6" HorizontalAlignment="Left" Orientation="Horizontal">
+                    <DataGrid x:Name="mapConfig" Grid.Column="0" Grid.Row="6" IsReadOnly="False" MinWidth="900"  MaxHeight="500" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MaxWidth="1000" FontSize="12"/>
+                    
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="100" Grid.Column="1" Grid.Row="6">
+                        <Button Name="moveUp" Margin="5" Content=" Move Up" Padding="5" Click="moveUp_Click"></Button>
+                        <Button Name="moveDown" Margin="5" Content="Move Down" Padding="5" Click="moveDown_Click"></Button>
+
+                    </StackPanel>
+                </StackPanel>
+
+                
 
                 <Button Margin="10" x:Name="SaveSettings" Click="SaveSettings_Click" Grid.Column="0" Grid.Row="7" Height="30" Content="Save Settings" VerticalAlignment="Top"/>
 
