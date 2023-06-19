@@ -12,6 +12,7 @@ using DWHelper;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.Services.Common.CommandLine;
 using Serilog;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 
 
 
@@ -82,6 +83,7 @@ if(argsHandler.parsedOptions.logLevel != null && argsHandler.parsedOptions.logLe
     Enum.TryParse<LogLevel>(argsHandler.parsedOptions.logLevel, out level);
 
 Console.WriteLine($"LogLevel {level}");
+GlobalVar.initConfig();
 
 CreateHostBuilderv2(args, level).Build().Run();
 
@@ -100,6 +102,26 @@ static IHostBuilder CreateHostBuilderv2(string[] args, LogLevel _logLevel) =>
         builder.AddFile(Path.Combine(subFolder, "ERROR" + fileName), LogLevel.Error);
         
         builder.AddFile(Path.Combine(subFolder, "LOG-" + fileName), LogLevel.Information).SetMinimumLevel(LogLevel.Information);
+
+        string appInsightConStr = String.Empty;
+        try
+        {
+            appInsightConStr =  GlobalVar.config.AppSettings.Settings["appInsightConnectionString"].Value;
+        }
+        catch 
+        {
+            Console.WriteLine("No app Insights connection string found!");
+        }
+
+        if (appInsightConStr != null && appInsightConStr != "")
+        {
+            builder.AddApplicationInsights(configureTelemetryConfiguration: (config) =>
+                config.ConnectionString = GlobalVar.config.AppSettings.Settings["appInsightConnectionString"].Value,
+                
+
+                configureApplicationInsightsLoggerOptions: (options) => { }
+                );
+        }
     })
         .ConfigureServices((_, services) =>
             services.AddHostedService<DWHostedService>());

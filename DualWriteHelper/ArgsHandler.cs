@@ -41,6 +41,8 @@ namespace DWHelper
 
                GlobalVar.noSolutions = o.noSolutions;
 
+               GlobalVar.newConfigFileName = o.newConfigFileName;
+
                parsedOptions = o;
 
                Console.WriteLine("Commandline arguments parsed and set");
@@ -71,6 +73,9 @@ namespace DWHelper
 
         [Option('c', "config", HelpText = "define what config to use for execution", Default = "")]
         public string configFileName { get; set; }
+
+        [Option('n', "new config", HelpText = "Define the name of the new configuration file during export", Default = "")]
+        public string newConfigFileName { get; set; }
 
         [Option('s', Default = DWEnums.MapStatus.None, HelpText = "Status for export, values Running, All, Stopped")]
         public DWEnums.MapStatus status { get; set; }

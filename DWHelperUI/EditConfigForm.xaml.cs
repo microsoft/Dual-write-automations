@@ -3,8 +3,11 @@
 
 using CommandLine;
 using DWLibary;
+using Microsoft.Identity.Client;
+using Microsoft.VisualStudio.Services.CircuitBreaker;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Globalization;
@@ -28,6 +31,7 @@ namespace DWHelperUI
     public partial class EditConfigForm : Window
     {
         public string configName { get; set; }
+        ObservableCollection<MapConfig> mapConfigsContent;
 
         public EditConfigForm(string configName)
         {
@@ -115,9 +119,9 @@ namespace DWHelperUI
         private void getMapsGridData()
         {
 
-            List<MapConfig> gridContent = GlobalVar.dwSettings.MapConfigs.Cast<MapConfig>().ToList();
+            mapConfigsContent = new ObservableCollection<MapConfig>(GlobalVar.dwSettings.MapConfigs.Cast<MapConfig>().ToList());
             setVisibility<MapConfig>(mapConfig);
-            mapConfig.ItemsSource = gridContent;
+            mapConfig.ItemsSource = mapConfigsContent;
            
         }
 
@@ -241,6 +245,45 @@ namespace DWHelperUI
         {
             SearchString.Clear();
             filterGrid();
+        }
+
+        private void moveUp_Click(object sender, RoutedEventArgs e)
+        {
+           
+            int selectedIndex = mapConfig.SelectedIndex;
+            if (selectedIndex > 0)
+            {
+                int newIndex = selectedIndex - 1;
+
+                MapConfig selectedItem = mapConfig.SelectedItem as MapConfig;
+                if (selectedItem != null)
+                {
+                    mapConfigsContent.RemoveAt(selectedIndex);
+                    mapConfigsContent.Insert(newIndex, selectedItem);
+                    mapConfig.SelectedItem = mapConfig.Items[newIndex];
+                    mapConfig.Focus();
+                }
+            }
+
+        }
+
+        private void moveDown_Click(object sender, RoutedEventArgs e)
+        {
+            int selectedIndex = mapConfig.SelectedIndex;
+            if (selectedIndex > 0)
+            {
+                
+                int newIndex = selectedIndex + 1;
+                MapConfig selectedItem = mapConfig.SelectedItem as MapConfig;
+
+                if (newIndex < mapConfig.Items.Count && selectedItem != null)
+                {
+                    mapConfigsContent.RemoveAt(selectedIndex);
+                    mapConfigsContent.Insert(newIndex, selectedItem);
+                    mapConfig.SelectedItem = mapConfig.Items[newIndex];
+                    mapConfig.Focus();
+                }
+            }
         }
     }
 
