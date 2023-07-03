@@ -1,0 +1,336 @@
+{
+    "source": 2,
+    "revision": 9,
+    "description": null,
+    "isDeleted": false,
+    "variables": {
+        "ConfigName": {
+            "value": "myCustomConfig.config",
+            "allowOverride": true
+        },
+        "DevOpsGitRepo": {
+            "value": "DWAutomationConfigs"
+        },
+        "DevOpsOrg": {
+            "value": "Your Organization"
+        },
+        "DevOpsProject": {
+            "value": "Your DevOps Project"
+        },
+        "FromFOEnvironment": {
+            "value": "yourEnvironment.axcloud.dynamics.com",
+            "allowOverride": true
+        },
+        "ToFOEnvironment": {
+            "value": "",
+            "allowOverride": true
+        }
+    },
+    "variableGroups": [],
+    "environments": [{
+            "id": 3,
+            "name": "Stage 1",
+            "rank": 1,
+            "variables": {},
+            "variableGroups": [],
+            "preDeployApprovals": {
+                "approvals": [{
+                        "rank": 1,
+                        "isAutomated": true,
+                        "isNotificationOn": false,
+                        "id": 7
+                    }
+                ],
+                "approvalOptions": {
+                    "requiredApproverCount": null,
+                    "releaseCreatorCanBeApprover": false,
+                    "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped": false,
+                    "enforceIdentityRevalidation": false,
+                    "timeoutInMinutes": 0,
+                    "executionOrder": 1
+                }
+            },
+            "deployStep": {
+                "id": 8
+            },
+            "postDeployApprovals": {
+                "approvals": [{
+                        "rank": 1,
+                        "isAutomated": true,
+                        "isNotificationOn": false,
+                        "id": 9
+                    }
+                ],
+                "approvalOptions": {
+                    "requiredApproverCount": null,
+                    "releaseCreatorCanBeApprover": false,
+                    "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped": false,
+                    "enforceIdentityRevalidation": false,
+                    "timeoutInMinutes": 0,
+                    "executionOrder": 2
+                }
+            },
+            "deployPhases": [{
+                    "deploymentInput": {
+                        "parallelExecution": {
+                            "parallelExecutionType": 0
+                        },
+                        "agentSpecification": {
+                            "identifier": "windows-latest"
+                        },
+                        "skipArtifactsDownload": false,
+                        "artifactsDownloadInput": {
+                            "downloadInputs": []
+                        },
+                        "queueId": 9,
+                        "demands": [],
+                        "enableAccessToken": false,
+                        "timeoutInMinutes": 0,
+                        "jobCancelTimeoutInMinutes": 1,
+                        "condition": "succeeded()",
+                        "overrideInputs": {}
+                    },
+                    "rank": 1,
+                    "phaseType": 1,
+                    "name": "Agent job",
+                    "refName": null,
+                    "workflowTasks": [{
+                            "environment": {},
+                            "taskId": "1e244d32-2dd4-4165-96fb-b7441ca9331e",
+                            "version": "2.*",
+                            "name": "Azure Key Vault: DWAutoDeployment",
+                            "refName": "",
+                            "enabled": true,
+                            "alwaysRun": false,
+                            "continueOnError": false,
+                            "timeoutInMinutes": 0,
+                            "retryCountOnTaskFailure": 0,
+                            "definitionType": "task",
+                            "overrideInputs": {},
+                            "condition": "succeeded()",
+                            "inputs": {
+                                "ConnectedServiceName": "c21a5aa2-279b-4f75-b158-b5fedd136fc6",
+                                "KeyVaultName": "DWAutoDeployment",
+                                "SecretsFilter": "*",
+                                "RunAsPreJob": "true"
+                            }
+                        }, {
+                            "environment": {},
+                            "taskId": "e213ff0f-5d5c-4791-802d-52ea3e7be1f1",
+                            "version": "2.*",
+                            "name": "Download latest release DW Automations",
+                            "refName": "",
+                            "enabled": true,
+                            "alwaysRun": false,
+                            "continueOnError": false,
+                            "timeoutInMinutes": 0,
+                            "retryCountOnTaskFailure": 0,
+                            "definitionType": "task",
+                            "overrideInputs": {},
+                            "condition": "succeeded()",
+                            "inputs": {
+                                "targetType": "inline",
+                                "filePath": "",
+                                "arguments": "",
+                                "script": "# Download latest dotnet/codeformatter release from github\n\n$repo = \"microsoft/Dual-write-automations\"\n$folder = \"DWHelper\"\n$zip = \"DWHelper.zip\"\n\n$releases = \"https://api.github.com/repos/$repo/releases\"\n\nWrite-Host Determining latest release\n[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12\n$tag = (Invoke-WebRequest -Uri $releases -UseBasicParsing | ConvertFrom-Json)[0].tag_name\n\n$download = \"https://github.com/$repo/releases/download/$tag/$zip\"\n\nWrite-Host Dowloading latest release\n\n[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12\nInvoke-WebRequest $download -Out $zip\n\nWrite-Host Extracting release files\nExpand-Archive $zip -Force\n\ndir\n\n# Cleaning up target dir\n#Remove-Item $name -Recurse -Force -ErrorAction SilentlyContinue \n\ndir\ncd $folder\n# Moving from temp dir to target dir\nMove-Item *  -Destination ..\\ -Force\n\ncd ..\ndir\n\n# Removing temp files\nRemove-Item $zip -Force\nRemove-Item $folder -Recurse -Force\n\n\ndir",
+                                "errorActionPreference": "stop",
+                                "warningPreference": "default",
+                                "informationPreference": "default",
+                                "verbosePreference": "default",
+                                "debugPreference": "default",
+                                "progressPreference": "silentlyContinue",
+                                "failOnStderr": "false",
+                                "showWarnings": "false",
+                                "ignoreLASTEXITCODE": "false",
+                                "pwsh": "false",
+                                "workingDirectory": " $(System.DefaultWorkingDirectory)",
+                                "runScriptInSeparateScope": "false"
+                            }
+                        }, {
+                            "environment": {},
+                            "taskId": "e213ff0f-5d5c-4791-802d-52ea3e7be1f1",
+                            "version": "2.*",
+                            "name": "Clone local config files",
+                            "refName": "",
+                            "enabled": true,
+                            "alwaysRun": false,
+                            "continueOnError": false,
+                            "timeoutInMinutes": 0,
+                            "retryCountOnTaskFailure": 0,
+                            "definitionType": "task",
+                            "overrideInputs": {},
+                            "condition": "succeeded()",
+                            "inputs": {
+                                "targetType": "inline",
+                                "filePath": "",
+                                "arguments": "",
+                                "script": "# Write your PowerShell commands here.\n\n$url =[uri]::EscapeUriString(\"https://$(pat)@dev.azure.com/$(DevOpsOrg)/$(DevOpsProject)/_git/$(DevOpsGitRepo)\")\n\nWrite-Host $url\n\ngit clone $url\n\ncd $(DevOpsGitRepo)\n\ndir\n\n# Moving from temp dir to target dir\nMove-Item *  -Destination ..\\ -Force\n",
+                                "errorActionPreference": "stop",
+                                "warningPreference": "default",
+                                "informationPreference": "default",
+                                "verbosePreference": "default",
+                                "debugPreference": "default",
+                                "progressPreference": "silentlyContinue",
+                                "failOnStderr": "false",
+                                "showWarnings": "false",
+                                "ignoreLASTEXITCODE": "false",
+                                "pwsh": "false",
+                                "workingDirectory": "",
+                                "runScriptInSeparateScope": "false"
+                            }
+                        }, {
+                            "environment": {},
+                            "taskId": "b0ce7256-7898-45d3-9cb5-176b752bfea6",
+                            "version": "2.*",
+                            "name": "Use .NET Core sdk 6.0.x",
+                            "refName": "",
+                            "enabled": true,
+                            "alwaysRun": false,
+                            "continueOnError": false,
+                            "timeoutInMinutes": 0,
+                            "retryCountOnTaskFailure": 0,
+                            "definitionType": "task",
+                            "overrideInputs": {},
+                            "condition": "succeeded()",
+                            "inputs": {
+                                "packageType": "sdk",
+                                "useGlobalJson": "false",
+                                "workingDirectory": "",
+                                "version": "6.0.x",
+                                "vsVersion": "",
+                                "includePreviewVersions": "false",
+                                "installationPath": "$(Agent.ToolsDirectory)/dotnet",
+                                "performMultiLevelLookup": "false"
+                            }
+                        }, {
+                            "environment": {},
+                            "taskId": "d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                            "version": "2.*",
+                            "name": "Export config",
+                            "refName": "",
+                            "enabled": true,
+                            "alwaysRun": false,
+                            "continueOnError": false,
+                            "timeoutInMinutes": 0,
+                            "retryCountOnTaskFailure": 0,
+                            "definitionType": "task",
+                            "overrideInputs": {},
+                            "condition": "succeeded()",
+                            "inputs": {
+                                "script": "$(System.DefaultWorkingDirectory)\\DWHelperCMD.exe -u \"$(username)\" -p \"$(password)\" -e \"$(FromFOEnvironment)\" --runmode \"export\" -s \"Running\" -o \"precise\" -n \"exportTmpConfig.config\"",
+                                "workingDirectory": "",
+                                "failOnStderr": "false"
+                            }
+                        }, {
+                            "environment": {},
+                            "taskId": "d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                            "version": "2.*",
+                            "name": "Apply New environment",
+                            "refName": "",
+                            "enabled": true,
+                            "alwaysRun": false,
+                            "continueOnError": false,
+                            "timeoutInMinutes": 0,
+                            "retryCountOnTaskFailure": 0,
+                            "definitionType": "task",
+                            "overrideInputs": {},
+                            "condition": "succeeded()",
+                            "inputs": {
+                                "script": "$(System.DefaultWorkingDirectory)\\DWHelperCMD.exe -u \"$(username)\" -p \"$(password)\" -e \"$(ToFOEnvironment)\" --runmode \"deployment\" -c \"exportTmpConfig.config\"",
+                                "workingDirectory": "",
+                                "failOnStderr": "false"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "environmentOptions": {
+                "emailNotificationType": "OnlyOnFailure",
+                "emailRecipients": "release.environment.owner;release.creator",
+                "skipArtifactsDownload": false,
+                "timeoutInMinutes": 0,
+                "enableAccessToken": false,
+                "publishDeploymentStatus": true,
+                "badgeEnabled": false,
+                "autoLinkWorkItems": false,
+                "pullRequestDeploymentEnabled": false
+            },
+            "demands": [],
+            "conditions": [{
+                    "name": "ReleaseStarted",
+                    "conditionType": 1,
+                    "value": ""
+                }
+            ],
+            "executionPolicy": {
+                "concurrencyCount": 1,
+                "queueDepthCount": 0
+            },
+            "schedules": [],
+            "currentRelease": {
+                "id": 44,
+                "url": "https://vsrm.dev.azure.com/MHLearningDemoEnv/bc5048a9-a442-4a20-931a-0340c88edbbb/_apis/Release/releases/44",
+                "_links": {}
+            },
+            "retentionPolicy": {
+                "daysToKeep": 30,
+                "releasesToKeep": 3,
+                "retainBuild": true
+            },
+            "processParameters": {},
+            "properties": {
+                "BoardsEnvironmentType": {
+                    "$type": "System.String",
+                    "$value": "unmapped"
+                },
+                "LinkBoardsWorkItems": {
+                    "$type": "System.String",
+                    "$value": "False"
+                }
+            },
+            "preDeploymentGates": {
+                "id": 0,
+                "gatesOptions": null,
+                "gates": []
+            },
+            "postDeploymentGates": {
+                "id": 0,
+                "gatesOptions": null,
+                "gates": []
+            },
+            "environmentTriggers": [],
+            "badgeUrl": "https://vsrm.dev.azure.com/MHLearningDemoEnv/_apis/public/Release/badge/bc5048a9-a442-4a20-931a-0340c88edbbb/2/3"
+        }
+    ],
+    "artifacts": [],
+    "triggers": [],
+    "releaseNameFormat": "Release-$(rev:r)",
+    "tags": [],
+    "properties": {
+        "DefinitionCreationSource": {
+            "$type": "System.String",
+            "$value": "ReleaseClone"
+        },
+        "IntegrateBoardsWorkItems": {
+            "$type": "System.String",
+            "$value": "False"
+        },
+        "IntegrateJiraWorkItems": {
+            "$type": "System.String",
+            "$value": "false"
+        }
+    },
+    "id": 2,
+    "name": "DW Automation - Export & Apply",
+    "path": "\\",
+    "projectReference": null,
+    "url": "https://vsrm.dev.azure.com/MHLearningDemoEnv/bc5048a9-a442-4a20-931a-0340c88edbbb/_apis/Release/definitions/2",
+    "_links": {
+        "self": {
+            "href": "https://vsrm.dev.azure.com/MHLearningDemoEnv/bc5048a9-a442-4a20-931a-0340c88edbbb/_apis/Release/definitions/2"
+        },
+        "web": {
+            "href": "https://dev.azure.com/MHLearningDemoEnv/bc5048a9-a442-4a20-931a-0340c88edbbb/_release?definitionId=2"
+        }
+    }
+}
