@@ -87,6 +87,7 @@ namespace DWHelper
                 //options.AddArguments("headless"); //no browser will open 
 
                 driver = new EdgeDriver(service, options);
+               
                 
                 session = ((IDevTools)driver).GetDevToolsSession();
                 
