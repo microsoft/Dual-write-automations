@@ -17,10 +17,10 @@
         "DevOpsProject": {
             "value": "Your DevOps Project"
         },
-        "FromFOEnvironment": {
+        "FOEnvironment": {
             "value": "yourEnvironment.axcloud.dynamics.com",
             "allowOverride": true
-        },
+        }
     },
     "variableGroups": [],
     "environments": [{
