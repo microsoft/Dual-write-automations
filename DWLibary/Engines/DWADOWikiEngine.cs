@@ -40,9 +40,14 @@ namespace DWLibary.Engines
         }
 
 
-        public async Task runWikiUpload()
+        public async Task runWikiUpload(bool forceUpload = false)
         {
             wikiUpload = new ADOWikiUpload(logger);
+
+            if(forceUpload)
+            {
+                wikiUpload.useUpload = true;
+            }
 
             if (!wikiUpload.useUpload)
             {
@@ -190,13 +195,21 @@ namespace DWLibary.Engines
 
             foreach (var map in wikiOverviewList)
             {
-                string link = wikiUpload.CombineForward(wikiUpload.wikiPath, map.subPageLink).Replace("\\", "/");
+                try
+                {
+                    string link = wikiUpload.CombineForward(wikiUpload.wikiPath, map.subPageLink).Replace("\\", "/");
 
-                link = link.Replace("-", "%2D");
-               // link = HttpUtility.UrlEncode(link);
-                link = link.Replace(" ", "-");
+                    link = link.Replace("-", "%2D");
+                    // link = HttpUtility.UrlEncode(link);
+                    link = link.Replace(" ", "-");
 
-                content += $"|{map.FOEntity} | {map.CEEntity} | [{map.FOEntity} - {map.CEEntity}]({link}) | {DWEnums.DescriptionAttr(map.syncDirection)} | {map.Version} | {map.Publisher} {Environment.NewLine}";
+                    content += $"|{map.FOEntity} | {map.CEEntity} | [{map.FOEntity} - {map.CEEntity}]({link}) | {DWEnums.DescriptionAttr(map.syncDirection)} | {map.Version} | {map.Publisher} {Environment.NewLine}";
+                }
+                catch ( Exception ex )
+                {
+                    
+                    logger.LogError(ex.ToString());
+                }
             }
 
 

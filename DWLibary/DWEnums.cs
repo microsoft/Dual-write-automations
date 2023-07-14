@@ -101,7 +101,11 @@ namespace DWLibary
             [Description("Pause maps")]
             pause,
             [Description("Export configuration")]
-            export
+            export,
+            [Description("Wiki upload")]
+            wikiUpload,
+            [Description("Compare environment")]
+            compare
         };
 
 

@@ -295,6 +295,8 @@ namespace DWLibary
                 savedTokens.Remove(lookup);
             }
 
+            loginData.environment = foEnv;
+
             savedTokens.Add(GlobalVar.loginData);
             writeLoginTokens();
 

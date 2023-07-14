@@ -62,7 +62,7 @@ namespace DWLibary.Engines
 
                     logger.LogDebug("Try to get list of maps...");
                     HttpClient client = new HttpClient();
-                    DWHttp dW = new DWHttp();
+                    DWHttp dW = new DWHttp(env);
 
                     HttpRequestMessage req = dW.buildDefaultHttpRequestGet();
 
@@ -211,7 +211,7 @@ namespace DWLibary.Engines
 
             logger.LogInformation($"Retrieving Solutions");
             HttpClient client = new HttpClient();
-            DWHttp dW = new DWHttp();
+            DWHttp dW = new DWHttp(env);
 
          
 
@@ -258,7 +258,7 @@ namespace DWLibary.Engines
             {
                 logger.LogInformation($"{prefix} - Retrieving field mappings");
                 HttpClient client = new HttpClient();
-                DWHttp dW = new DWHttp();
+                DWHttp dW = new DWHttp(env);
 
                 HttpRequestMessage req = dW.buildDefaultHttpRequestGet();
 
@@ -300,7 +300,7 @@ namespace DWLibary.Engines
             try
             {
                 HttpClient client = new HttpClient();
-                DWHttp dW = new DWHttp();
+                DWHttp dW = new DWHttp(env);
 
                 HttpRequestMessage req = dW.buildDefaultHttpRequestGet();
 

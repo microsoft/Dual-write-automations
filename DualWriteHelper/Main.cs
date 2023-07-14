@@ -49,7 +49,7 @@ using (StreamReader sr = new StreamReader(@"DEBUGArgs.txt"))
         argsList.Add(value);
 
         if (value == "--runmode")
-            argsList.Add("export");
+            argsList.Add("deployment");
 
     }
 
@@ -98,7 +98,8 @@ static IHostBuilder CreateHostBuilderv2(string[] args, LogLevel _logLevel) =>
             builder.AddFile(Path.Combine(subFolder, "DEBUG" + fileName), _logLevel);
 
         builder.AddFile(Path.Combine(subFolder, "ERROR" + fileName), LogLevel.Error);
-        
+        builder.AddFile(Path.Combine(subFolder, "WARM" + fileName), LogLevel.Warning);
+
         builder.AddFile(Path.Combine(subFolder, "LOG-" + fileName), LogLevel.Information).SetMinimumLevel(LogLevel.Information);
     })
         .ConfigureServices((_, services) =>

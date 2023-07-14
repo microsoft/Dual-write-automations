@@ -50,6 +50,16 @@ namespace DWHelper
                 //check if the given username is a user or a client id: 
                 //ClientId won't work
 
+                if (GlobalVar.runMode == DWEnums.RunMode.compare)
+                {
+                    //do something
+                    DWComparison dWComparison = new DWComparison("ccbaw2-p1-uat01.sandbox.operations.eu.dynamics.com", "csaewdw2qfo094c346662dbaff709devaos.cloudax.dynamics.com", logger);
+                    dWComparison.runComparison().Wait();
+                    logger.LogInformation("Comparison complete");
+                    lifeTime.StopApplication();
+                    return;
+                }
+
                 if (!GlobalVar.username.Contains("@"))
                 {
                     //Client / Secret auth
@@ -67,9 +77,6 @@ namespace DWHelper
                     logger.LogInformation("Get access token, opening Edge");
 
                     checkEdgeVersionAndRetrieveToken();
-
-
-                    
 
                 }
 
@@ -100,6 +107,13 @@ namespace DWHelper
                 {
                     logger.LogInformation("Exporting config parameter is true");
                     mapEngine.generateMapConfig().Wait();
+                }
+                //only if Wiki upload should be done
+                else if(GlobalVar.runMode == DWEnums.RunMode.wikiUpload)
+                {
+                    // now do the Wiki Upload
+                    DWADOWikiEngine adoWiki = new DWADOWikiEngine(dwEnv, logger);
+                    adoWiki.runWikiUpload(true).Wait();
                 }
                 else
                 {
@@ -135,13 +149,7 @@ namespace DWHelper
             lifeTime.StopApplication();
         }
 
-        private void checkKillEdgeDriver()
-        {
-            foreach (Process p in Process.GetProcessesByName("msedgedriver"))
-            {
-                p.Kill();
-            }
-        }
+
 
         public void reAuthenticate()
         {
@@ -152,12 +160,6 @@ namespace DWHelper
 
         private void checkEdgeVersionAndRetrieveToken()
         {
-
-
-            checkKillEdgeDriver();
-            var version = FileVersionInfo.GetVersionInfo(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe");
-
-            logger.LogInformation($"Your Edge version: {version.ProductMajorPart}");
 
             EdgeUniversal uni = new EdgeUniversal(logger);
             uni.getToken();

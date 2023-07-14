@@ -52,9 +52,12 @@ namespace DWLibary.Struct
 
         public string username { get; set; }
 
+        public string environment { get; set; }
+
         public LoginData()
         {
-            tokenRefreshDate = DateTime.Now;  
+            tokenRefreshDate = DateTime.Now;
+            environment = String.Empty;
         }
 
         public string getUsername()
