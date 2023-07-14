@@ -49,7 +49,9 @@ namespace DWLibary
             //Drivers found here: https://www.selenium.dev/downloads/
             
             service = OpenQA.Selenium.Edge.EdgeDriverService.CreateDefaultService(Path.Combine(GlobalVar.curExecutingDirectory(), "Drivers"), @"msedgedriver.exe");
-            service.UseVerboseLogging = true;
+            //disable console logging 
+            service.UseVerboseLogging = false;
+            service.EnableVerboseLogging = false;
             service.Start();
         }
 
@@ -102,9 +104,10 @@ namespace DWLibary
                 //options.AddArguments("headless"); //no browser will open 
 
                 driver = new EdgeDriver(service, options);
-
-                session = ((IDevTools)driver).GetDevToolsSession();
                
+                
+                session = ((IDevTools)driver).GetDevToolsSession();
+                
                 initNetworkAdapter();
 
 
@@ -116,7 +119,7 @@ namespace DWLibary
 
                 bool userOk = false, pwOk = false, MFAOk = false;
 
-
+                DateTime timeoutDT = DateTime.Now;
 
                 while (GlobalVar.loginData is null || GlobalVar.loginData.access_token is null || GlobalVar.baseUrl is null || GlobalVar.baseUrl == String.Empty)
                 {
@@ -134,7 +137,7 @@ namespace DWLibary
 
                             if (!userOk)
                             {
-
+                                logger.LogInformation("Entering username");
                                 driver.FindElement(By.Name("loginfmt")).SendKeys(GlobalVar.username); //Username
                                 userOk = true;
                                 driver.FindElement(By.Id("idSIButton9")).Submit(); //passwd
@@ -143,6 +146,7 @@ namespace DWLibary
 
                             if (!pwOk && GlobalVar.password != String.Empty)
                             {
+                                logger.LogInformation("Entering password");
                                 driver.FindElement(By.Name("passwd")).SendKeys(GlobalVar.password); //Enter PW
 
                                 driver.FindElement(By.Id("idSIButton9")).Submit(); //Confirm PW
@@ -156,10 +160,11 @@ namespace DWLibary
 
                                 if (!MFAOk && GlobalVar.config.AppSettings.Settings["MFASecretKey"].Value != "")
                                 {
+                                    
                                     IWebElement element = driver.FindElement(By.Id("idTxtBx_SAOTCC_OTC"));
 
                                     logger.LogInformation("MFA is enabled!");
-
+                                    logger.LogInformation("Entering MFA Key");
                                     element.SendKeys(MFAGen.getMFAKey());
                                     MFAOk = true;
                                     
@@ -171,11 +176,6 @@ namespace DWLibary
                             }
                             //if not found it throws 
                             catch { }
-
-
-
-
-
 
                             if (GlobalVar.password != String.Empty && GlobalVar.username != String.Empty)
                                 driver.FindElement(By.Id("idSIButton9")).Submit(); //Confirm Stay Signed in
@@ -191,11 +191,24 @@ namespace DWLibary
                         logger.LogInformation("No username / password given - waiting manual entry!");
                     }
 
+                    if(DateTime.Now - timeoutDT > TimeSpan.FromMinutes(1))
+                    {
+                        GlobalVar.addError("Authentication failed - could not login with credentials");
+                        throw new Exception("Authentication failed!");
+
+                    }
+
+
                 }
 
                 //get the Gateway URL
                 while (GlobalVar.baseUrl == null || GlobalVar.baseUrl.Length == 0)
                 {
+                    if (DateTime.Now - timeoutDT > TimeSpan.FromMinutes(3))
+                    {
+                        throw new Exception("Authentication failed, check username, password and the environment url");
+
+                    }
                     Thread.Sleep(1000);
                 }
 

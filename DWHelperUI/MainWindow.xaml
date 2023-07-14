@@ -9,7 +9,7 @@
         Width="1150" Height="850" MinWidth="1150" MinHeight="790" WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen" Background="Transparent">
 
-    <Border CornerRadius="5" Background="#ffffff" MouseDown="Grid_MouseDown" MouseLeftButtonDown="Grid_MouseLeftButtonDown">
+    <Border Background="#ffffff" MouseDown="Grid_MouseDown" MouseLeftButtonDown="Grid_MouseLeftButtonDown">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -93,9 +93,14 @@
 
             <TextBlock Grid.Row="2" Grid.Column="2" Text="Environmentlist" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20 0 0 2" FontSize="12" FontWeight="SemiBold" Foreground="#000"/>
             <Separator Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="1" Height="0.7" Margin="150 20 20 20" Background="#E1E6EB"/>
-            <ListBox x:Name="envList" Grid.Row="3" Grid.RowSpan="5" Grid.Column="2" ItemsSource="{Binding envList, Source={x:Static props:Settings.Default}}" Margin="20" MouseDoubleClick="envList_MouseDoubleClick"/>
+            <ListBox x:Name="envList" Grid.Row="3" Grid.RowSpan="4" Grid.Column="2" ItemsSource="{Binding envList, Source={x:Static props:Settings.Default}}" Margin="20" MouseDoubleClick="envList_MouseDoubleClick"/>
             <!--<DataGrid x:Name="dataGrid" Grid.Row="3" Grid.RowSpan="5" Margin="20" Grid.Column="2" av:ItemsSource="{av:SampleData ItemCount=5}"/>-->
-
+            <StackPanel Orientation="Vertical" Grid.Row="7" Grid.Column="2" Margin="20,10" Name="actions">
+                <TextBlock Text="Actions" HorizontalAlignment="Left" VerticalAlignment="Center"  FontSize="12" FontWeight="SemiBold" Foreground="#000"/>
+                <Button Name="showLastLog" Content="Open last logfile" Height="30" Width="100"  HorizontalAlignment="Left" Margin="5" Click="showLastLog_Click"></Button>
+                <Button Name="showLogs" Content="Show log folder" Height="30" Width="100" HorizontalAlignment="Left" Margin="5" Click="showLogs_Click"></Button>
+            </StackPanel>
+            
 
             <TextBlock Grid.Row="5" Grid.ColumnSpan="3" Text="Settings" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20 0 0 2" FontSize="12" FontWeight="SemiBold" Foreground="#000"/>
             <Separator Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Height="0.7" Margin="150 20 20 20" Background="#E1E6EB"/>
@@ -114,8 +119,7 @@
                 </ComboBox>-->
             </StackPanel>
 
-
-            <StackPanel Margin="20 10" Grid.Column="0" Grid.Row="7">
+            <StackPanel Margin="20 10" Grid.Column="0" Grid.Row="7" Name="runSettings">
                 <TextBlock Text="Run mode" HorizontalAlignment="Left" VerticalAlignment="Center"  FontSize="12" FontWeight="SemiBold" Foreground="#000"/>
                 <ComboBox x:Name="runMode" 
                SelectionChanged="comboBox_SelectionChanged" SelectedValuePath="Value" DisplayMemberPath="Description"
@@ -143,8 +147,8 @@
                     </ComboBox>
                 </StackPanel>
             </StackPanel>
-
-            <StackPanel Margin="20 10" Grid.Column="1" Grid.Row="7">
+    
+            <StackPanel Margin="20 10" Grid.Column="1" Grid.Row="7" Name="logSettings">
                 <TextBlock Text="Log level"></TextBlock>
                 <ComboBox x:Name="logLevel"  SelectedItem="{Binding logLevel, Source={x:Static props:Settings.Default}}"                 
                          >
@@ -153,29 +157,35 @@
                     <System:String>Debug</System:String>
                    
                 </ComboBox>
+                
             </StackPanel>
 
+            
 
-            <StackPanel Margin="20 10" Grid.Column="0" Grid.Row="8">
+
+            <StackPanel Margin="20 10" Grid.Column="0" Grid.Row="8" Name="configSettings">
                 <TextBlock Text="Configfile" Foreground="#000" FontSize="13" Margin="0 0 0 8"/>
 
                 <ComboBox x:Name="customConfigFile" Foreground="#000" FontSize="13" SelectedItem="{Binding configName, Source={x:Static props:Settings.Default}}" SelectionChanged="customConfigFile_SelectionChanged"/>
+                <StackPanel  Grid.Column="1" Grid.Row="8" Name="newConfigSection">
+                    <TextBlock Text="New configuration name" Foreground="#000" FontSize="13" Margin="0 0 0 8"/>
+
+                    <TextBox x:Name="newConfigFileName" ToolTip="New configuration file name" Foreground="#000" FontSize="13" />
+                    <!--<TextBlock Text="Username which has access to manage the DW maps" FontSize="10"></TextBlock>-->
+                </StackPanel>
 
                 <Button x:Name="editConfigFile" Margin="0 10" Height="30" Click="editConfigFile_Click" Content="Edit Config"/>
             </StackPanel>
 
 
-            <StackPanel Grid.Row="8" Grid.Column="1" Margin="20">
+            <!--<StackPanel Grid.Row="8" Grid.Column="1" Margin="20">
                 <Button  x:Name="StartProcess" Margin="5" Height="30" Click="StartProcess_Click" Content="Start" />
                 <Button  x:Name="StopProcess" Margin="5" Height="30" Click="StopProcess_Click" Content="Stop" />
-            </StackPanel>
+            </StackPanel>-->
             <StackPanel Grid.Column="0" Grid.Row="9"  Grid.ColumnSpan="3" Margin="20 0">
-                <StackPanel Orientation="Horizontal">
-                    <Button Name="showLastLog" Content="Open last logfile" Height="30" Width="100"  HorizontalAlignment="Left" Margin="0 0 20 20" Click="showLastLog_Click"></Button>
-                    <Button Name="showLogs" Content="Show log folder" Height="30" Width="100" HorizontalAlignment="Left" Margin="0 0 0 20" Click="showLogs_Click"></Button>
-                </StackPanel>
+               
                 
-                <RichTextBox x:Name="outputLog" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Height="230" IsReadOnly="true">
+                <RichTextBox x:Name="outputLog" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Height="150" IsReadOnly="true">
                     <FlowDocument>
                         <Paragraph>
                             <Run Text="Output log"/>
@@ -183,6 +193,11 @@
                     </FlowDocument>
                 </RichTextBox>
 
+            </StackPanel>
+
+            <StackPanel Grid.Row="10" Grid.Column="0" Margin="20,10" Grid.ColumnSpan="2"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal">
+                <Button  x:Name="StartProcess" Margin="5" Height="30" Width="200" Click="StartProcess_Click" Content="Start" Background="ForestGreen"/>
+                <Button  x:Name="StopProcess" Margin="5" Height="30" Width="200" Click="StopProcess_Click" Content="Stop" Background="OrangeRed" />
             </StackPanel>
         </Grid>
     </Border>

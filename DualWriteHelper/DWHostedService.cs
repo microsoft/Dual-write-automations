@@ -27,9 +27,6 @@ public class DWHostedService : IHostedService
         appLifetime.ApplicationStarted.Register(OnStarted);
         appLifetime.ApplicationStopping.Register(OnStopping);
         appLifetime.ApplicationStopped.Register(OnStopped);
-        //appLifetime.
-        
-        //appLifetime.
     }
 
     private void DoWorkAsync()

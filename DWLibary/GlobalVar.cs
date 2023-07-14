@@ -34,6 +34,8 @@ namespace DWLibary
 
         public static string configFileName { get; set; }
 
+        public static string newConfigFileName { get; set; }
+
         public static string tenant { get; set; }
 
         public static bool noSolutions { get; set; }

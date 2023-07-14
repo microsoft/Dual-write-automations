@@ -285,6 +285,15 @@ namespace DWLibary.Engines
             localDW = dwSettings;
 
             string fileName = $"{GlobalVar.foEnv}_{DateTime.Now.ToString("yyyy-MM-dd")}.config";
+
+            if (GlobalVar.newConfigFileName != null && GlobalVar.newConfigFileName != String.Empty)
+            {
+                fileName = GlobalVar.newConfigFileName;
+
+                if (!fileName.Contains(".config"))
+                    fileName += ".config";
+            }
+
             localConfig.SaveAs(fileName, ConfigurationSaveMode.Full);
 
         }

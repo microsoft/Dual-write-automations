@@ -68,8 +68,43 @@ namespace DWHelperUI
             }
         }
 
+        private void showHideSettings(bool hide)
+        {
+            Visibility settingsVisibility;
+            Visibility outputVisibility;
+
+            if (hide)
+            {
+                settingsVisibility = Visibility.Collapsed;
+            }
+            else
+            {
+                settingsVisibility = Visibility.Visible;
+
+            }
+
+
+            runSettings.Visibility = settingsVisibility;
+            configSettings.Visibility = settingsVisibility;
+            actions.Visibility = settingsVisibility;
+            logSettings.Visibility = settingsVisibility;
+
+            if (hide)
+            {
+                outputLog.Height = 400;
+            }
+            else
+            {
+                outputLog.Height = 150;
+            }
+
+
+        }
+
         private void StartProcess_Click(object sender, RoutedEventArgs e)
         {
+
+            showHideSettings(true);
 
             if (!isValidStart())
             {
@@ -159,7 +194,9 @@ namespace DWHelperUI
                 StartProcess.IsEnabled = true;
                 StopProcess.IsEnabled = false;
                 initConfigFiles();
+                showHideSettings(false);
             });
+
             
            // throw new NotImplementedException();
         }
@@ -227,10 +264,17 @@ namespace DWHelperUI
 
             if (configName != null && configName != String.Empty)
             {
-                if(configName != "DWHelper.dll.config")
+                //if default dont add to parameters
+                if(configName != "DWHelperCMD.dll.config")
                 {
                     ret.Add("-c");
                     ret.Add(($"\"{configName}\""));
+                }
+
+                if(localMode == DWEnums.RunMode.export && newConfigFileName.Text != String.Empty)
+                {
+                    ret.Add("-n");
+                    ret.Add(($"\"{newConfigFileName.Text}\""));
                 }
             }
 
@@ -444,6 +488,7 @@ namespace DWHelperUI
                     applySolutionPanel.Visibility = Visibility.Collapsed;
                     adowikiupload.IsEnabled = false;
                     adowikiuploadpanel.Visibility = Visibility.Collapsed;
+                    newConfigSection.Visibility = Visibility.Visible;
                     break;
 
 
@@ -453,6 +498,7 @@ namespace DWHelperUI
                     adowikiupload.IsEnabled = true;
                     adowikiuploadpanel.Visibility = Visibility.Visible;
                     exportSettings.Visibility = Visibility.Collapsed;
+                    newConfigSection.Visibility = Visibility.Collapsed;
                     break;
             }
 
