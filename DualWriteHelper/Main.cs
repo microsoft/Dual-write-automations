@@ -50,7 +50,7 @@ using (StreamReader sr = new StreamReader(@"DEBUGArgs.txt"))
         argsList.Add(value);
 
         if (value == "--runmode")
-            argsList.Add("deployment");
+            argsList.Add("wikiUpload");
 
     }
 

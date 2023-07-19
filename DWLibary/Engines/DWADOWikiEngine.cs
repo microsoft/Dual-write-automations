@@ -49,11 +49,15 @@ namespace DWLibary.Engines
                 wikiUpload.useUpload = true;
             }
 
+
+
             if (!wikiUpload.useUpload)
             {
                 logger.LogInformation("ADO Wikiupload won't be executed!");
                 return;
             }
+
+            await wikiUpload.init();
 
             logger.LogInformation($"Creating ADO Wiki...");
 
@@ -88,6 +92,9 @@ namespace DWLibary.Engines
                 valueMapContent = String.Empty;
 
                 if (currentMap.detail.pid == null)
+                    continue;
+
+                if (!curMapConfig.groupSetting.wikiUpload)
                     continue;
 
                 logger.LogInformation($"Starting creating page for {currentMap.detail.tName}");
