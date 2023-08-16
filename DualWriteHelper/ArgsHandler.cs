@@ -29,7 +29,7 @@ namespace DWHelper
                // parsing successful; go ahead and run the app
                GlobalVar.username = o.username;
                GlobalVar.password = o.password;
-               GlobalVar.foEnv = o.environment;
+               GlobalVar.foEnv = (new System.Uri(o.environment)).Host;
                GlobalVar.configFileName = o.configFileName;
                GlobalVar.mfasecret = o.mfasecret;
                GlobalVar.useadowikiupload= o.useadowikiupload;
