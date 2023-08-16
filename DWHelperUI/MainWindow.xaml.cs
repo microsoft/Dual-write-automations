@@ -475,6 +475,16 @@ namespace DWHelperUI
             }
 
         }
+        private void setDefaultVisibility()
+        {
+            applySolutions.IsEnabled = true;
+            applySolutionPanel.Visibility = Visibility.Visible;
+            adowikiupload.IsEnabled = true;
+            adowikiuploadpanel.Visibility = Visibility.Visible;
+            exportSettings.Visibility = Visibility.Collapsed;
+            newConfigSection.Visibility = Visibility.Collapsed;
+            compareSettings.Visibility = Visibility.Collapsed;
+        }
 
         private void comboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -483,6 +493,7 @@ namespace DWHelperUI
             switch(selectedRunMode)
             {
                 case DWEnums.RunMode.export:
+                    setDefaultVisibility();
                     exportSettings.Visibility = Visibility.Visible;
                     applySolutions.IsEnabled = false;
                     applySolutionPanel.Visibility = Visibility.Collapsed;
@@ -491,14 +502,26 @@ namespace DWHelperUI
                     newConfigSection.Visibility = Visibility.Visible;
                     break;
 
+                case DWEnums.RunMode.compare:
+                    setDefaultVisibility();
+                    compareSettings.Visibility = Visibility.Visible;
+                    applySolutions.IsEnabled = false;
+                    applySolutionPanel.Visibility = Visibility.Collapsed;
+                    adowikiupload.IsEnabled = false;
+                    adowikiuploadpanel.Visibility = Visibility.Collapsed;
+                    break;
+
+                case DWEnums.RunMode.wikiUpload:
+                    setDefaultVisibility();
+                    applySolutions.IsEnabled = false;
+                    applySolutionPanel.Visibility = Visibility.Collapsed;
+                    adowikiupload.IsEnabled = false;
+                    adowikiuploadpanel.Visibility = Visibility.Collapsed;
+                    break;
+
 
                 default:
-                    applySolutions.IsEnabled = true;
-                    applySolutionPanel.Visibility = Visibility.Visible;
-                    adowikiupload.IsEnabled = true;
-                    adowikiuploadpanel.Visibility = Visibility.Visible;
-                    exportSettings.Visibility = Visibility.Collapsed;
-                    newConfigSection.Visibility = Visibility.Collapsed;
+                    setDefaultVisibility();
                     break;
             }
 

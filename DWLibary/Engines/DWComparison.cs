@@ -95,13 +95,17 @@ namespace DWLibary
 
                 List<FieldMapping> mapping01, mapping02;
 
-                
+                DWConnSetEnvironment con01 = await common01.getConnectionSetEnvironment(DWEnums.DataMaster.FO);
+                DWConnSetEnvironment con02 = await common02.getConnectionSetEnvironment(DWEnums.DataMaster.FO);
 
                 mapping01 = common01.curFieldMapping.entityMappingTasks[0].legs[0].fieldMappings;
                 mapping02 = common02.curFieldMapping.entityMappingTasks[0].legs[0].fieldMappings;
 
 
+                logger.LogWarning($"Comparing Source as {con01.name} with target {con02.name}");
                 compareFieldMapping(mapping01, mapping02, true);
+
+                logger.LogWarning($"Comparing Source as {con02.name} with target {con01.name}");
                 compareFieldMapping(mapping02, mapping01);
 
                 //var difference = mapping01.Except(mapping02);

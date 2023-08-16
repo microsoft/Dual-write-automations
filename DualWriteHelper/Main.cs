@@ -50,7 +50,7 @@ using (StreamReader sr = new StreamReader(@"DEBUGArgs.txt"))
         argsList.Add(value);
 
         if (value == "--runmode")
-            argsList.Add("wikiUpload");
+            argsList.Add("compare");
 
     }
 
@@ -81,6 +81,8 @@ LogLevel level = LogLevel.Information;
 
 if(argsHandler.parsedOptions.logLevel != null && argsHandler.parsedOptions.logLevel != "")
     Enum.TryParse<LogLevel>(argsHandler.parsedOptions.logLevel, out level);
+
+
 
 Console.WriteLine($"LogLevel {level}");
 GlobalVar.initConfig();

@@ -47,6 +47,8 @@ namespace DWLibary
 
         public static List<ErrorMessage> errors { get; set; }
 
+        public static Options parsedOptions { get; set; }
+
         public static LoginData loginData
         {
             get

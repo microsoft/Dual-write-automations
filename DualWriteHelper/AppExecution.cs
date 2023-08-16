@@ -53,7 +53,14 @@ namespace DWHelper
                 if (GlobalVar.runMode == DWEnums.RunMode.compare)
                 {
                     //do something
-                    DWComparison dWComparison = new DWComparison("ccbaw2-p1-uat01.sandbox.operations.eu.dynamics.com", "csaewdw2qfo094c346662dbaff709devaos.cloudax.dynamics.com", logger);
+                    if(GlobalVar.parsedOptions.targetenvironment == null || GlobalVar.parsedOptions.targetenvironment == String.Empty)
+                    {
+                        logger.LogError("Target environment is empty, for comparison specify a target with -t");
+                        lifeTime.StopApplication();
+                        return;
+                    }
+
+                    DWComparison dWComparison = new DWComparison(GlobalVar.foEnv, GlobalVar.parsedOptions.targetenvironment, logger);
                     dWComparison.runComparison().Wait();
                     logger.LogInformation("Comparison complete");
                     lifeTime.StopApplication();

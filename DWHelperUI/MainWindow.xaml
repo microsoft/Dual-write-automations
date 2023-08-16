@@ -146,6 +146,11 @@
                        
                     </ComboBox>
                 </StackPanel>
+                <StackPanel Name="compareSettings">
+                    <TextBlock Text="Target FO environment to compare"></TextBlock>
+                    <TextBox x:Name="targetFO" ToolTip="Target environment to compare with" Foreground="#000" FontSize="13" />
+                </StackPanel>
+
             </StackPanel>
     
             <StackPanel Margin="20 10" Grid.Column="1" Grid.Row="7" Name="logSettings">
