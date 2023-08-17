@@ -24,7 +24,10 @@ namespace DWLibary
                // parsing successful; go ahead and run the app
                GlobalVar.username = o.username;
                GlobalVar.password = o.password;
-               GlobalVar.foEnv = o.environment;
+
+               GlobalVar.foEnv = parseUriHostname(o.environment);
+               
+               
                GlobalVar.configFileName = o.configFileName;
                GlobalVar.mfasecret = o.mfasecret;
                GlobalVar.useadowikiupload = o.useadowikiupload;
@@ -40,7 +43,11 @@ namespace DWLibary
 
                parsedOptions = o;
 
+               
+
+               o.targetenvironment = parseUriHostname(o.targetenvironment);
                GlobalVar.parsedOptions = o;
+
 
                Console.WriteLine("Commandline arguments parsed and set");
 
@@ -51,6 +58,31 @@ namespace DWLibary
 
 
            });
+        }
+
+
+        private string parseUriHostname(string url)
+        {
+
+            string ret = String.Empty;
+
+            if(url == null || url.Length == 0)
+            {
+                return ret;
+            }
+
+            url = url.Trim();
+
+            UriBuilder builder = new UriBuilder(url);
+            if (builder.Uri != null)
+            {
+                ret = builder.Uri.Host;
+            }
+            
+
+            return ret;
+
+
         }
 
 

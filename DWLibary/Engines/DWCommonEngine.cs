@@ -332,6 +332,24 @@ namespace DWLibary.Engines
             }
         }
 
+        public string getSourceFilter()
+        {
+            string ret = String.Empty;
+
+            ret = curFieldMapping.entityMappingTasks[0].legs[0].sourceFilter == null ? "" : curFieldMapping.entityMappingTasks[0].legs[0].sourceFilter;
+
+            return ret;
+        }
+
+        public string getDestinationFilter()
+        {
+            string ret = String.Empty;
+
+            ret = curFieldMapping.entityMappingTasks[0].legs[0].reversedSourceFilter == null ? "" : curFieldMapping.entityMappingTasks[0].legs[0].reversedSourceFilter;
+
+            return ret;
+        }
+
     }
 
 

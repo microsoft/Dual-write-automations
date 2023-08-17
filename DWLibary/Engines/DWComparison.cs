@@ -31,7 +31,6 @@ namespace DWLibary
 
         public DWComparison(string _foUrl01, string _foUrl02, ILogger _logger)
         {
-
             this.foUrl01 = _foUrl01;
             this.foUrl02 = _foUrl02;
             this.logger = _logger;
@@ -56,12 +55,20 @@ namespace DWLibary
             env02 = await dWEnvCalls.getEnvironment();
 
 
+            if (env01.cid == null || env01.cid.Length == 0)
+            {
+                logger.LogInformation("Source environment is not linked, exiting");
+                return;
+            }
+
+            if (env02.cid == null || env02.cid.Length == 0)
+            {
+                logger.LogInformation("Target environment is not linked, exiting");
+                return;
+            }
+
             common01 = new DWCommonEngine(env01, logger);
             common02 = new DWCommonEngine(env02, logger);
-
-            
-
-
 
         }
 
@@ -75,14 +82,11 @@ namespace DWLibary
 
             mapConfigs = GlobalVar.dwSettings.MapConfigs;
 
+            string prefix = "";
+
             foreach (MapConfig config in mapConfigs)
             {
                 curMapConfig = config;
-
-                if (config.mapName.Contains("header"))
-                {
-                    logger.LogInformation("Some");
-                }
 
                 currentMap01 = dwMaps01.Where(x => x.detail.tName.Equals(config.mapName)).FirstOrDefault();
                 currentMap02 = dwMaps02.Where(x => x.detail.tName.Equals(config.mapName)).FirstOrDefault();
@@ -90,8 +94,28 @@ namespace DWLibary
                 if (!mapCompareExists())
                     continue;
 
-                await common01.getFieldMappingForMaps(currentMap01);
-                await common02.getFieldMappingForMaps(currentMap02);
+                prefix = config.mapName;
+                //getField mappings
+                await common01.getFieldMappingForMaps(currentMap01, config.mapName);
+                await common02.getFieldMappingForMaps(currentMap02, config.mapName);
+
+
+                //Compare filters:
+                if (common01.getSourceFilter() != common02.getSourceFilter())
+                {
+                    logger.LogWarning($"Map {prefix}: FO Filters are different, Source: {common01.getSourceFilter()}, Target: {common02.getSourceFilter()}");
+                }
+
+                if (common01.getDestinationFilter() != common02.getDestinationFilter())
+                {
+                    logger.LogWarning($"Map {prefix}: CE Filters are different, Source: {common01.getDestinationFilter()}, Target: {common02.getDestinationFilter()}");
+                }
+
+
+                //compare integration keys
+                await compareIntegrationKeys(prefix);
+
+                
 
                 List<FieldMapping> mapping01, mapping02;
 
@@ -105,21 +129,34 @@ namespace DWLibary
                 logger.LogWarning($"Comparing Source as {con01.name} with target {con02.name}");
                 compareFieldMapping(mapping01, mapping02, true);
 
+
                 logger.LogWarning($"Comparing Source as {con02.name} with target {con01.name}");
                 compareFieldMapping(mapping02, mapping01);
-
-                //var difference = mapping01.Except(mapping02);
-
-                //foreach (var item in difference)
-                //{
-                //    Console.WriteLine(item);
-                //}
 
 
             }
 
             
 
+
+
+        }
+
+        private async Task compareIntegrationKeys(string _prefix)
+        {
+
+            var soureKeys = (await common01.getCurrentKeyList(currentMap01)).OrderBy(x => x).ToList();
+            var targetKeys = (await common02.getCurrentKeyList(currentMap02)).OrderBy(x => x).ToList();
+
+
+            var difference = soureKeys.Except(targetKeys).ToList();
+
+
+
+            foreach (var key in difference)
+            {
+                logger.LogWarning($"{_prefix} Integration key is different in key {key}");
+            }
 
 
         }

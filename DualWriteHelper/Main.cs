@@ -102,7 +102,7 @@ static IHostBuilder CreateHostBuilderv2(string[] args, LogLevel _logLevel) =>
             builder.AddFile(Path.Combine(subFolder, "DEBUG" + fileName), _logLevel);
 
         builder.AddFile(Path.Combine(subFolder, "ERROR" + fileName), LogLevel.Error);
-        builder.AddFile(Path.Combine(subFolder, "WARM" + fileName), LogLevel.Warning);
+        builder.AddFile(Path.Combine(subFolder, "WARN" + fileName), LogLevel.Warning);
 
         builder.AddFile(Path.Combine(subFolder, "LOG-" + fileName), LogLevel.Information).SetMinimumLevel(LogLevel.Information);
 

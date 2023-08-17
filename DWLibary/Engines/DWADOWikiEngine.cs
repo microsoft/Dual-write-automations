@@ -129,7 +129,7 @@ namespace DWLibary.Engines
 
             string content = String.Empty;
 
-            await common.getFieldMappingForMaps(currentMap);
+            await common.getFieldMappingForMaps(currentMap, curMapConfig.mapName);
 
             //headers
             content += $"## Map details {Environment.NewLine}{Environment.NewLine}";
@@ -147,8 +147,8 @@ namespace DWLibary.Engines
             content += $"| **Description** |{currentMap.detail.template.description} | {Environment.NewLine}";
             content += $"| **Direction** | {DWEnums.DescriptionAttr<DWEnums.DWSyncDirection>(getSyncDirection())} {Environment.NewLine}";
             content += $" **Integration key** | {await common.getCurrentKeys(currentMap)}{Environment.NewLine}";
-            content += $"| **FO Filter** | {getSourceFilter()} |{Environment.NewLine}";
-            content += $"| **CE Filter** | {getDestinationFilter()} |{Environment.NewLine}";
+            content += $"| **FO Filter** | {common.getSourceFilter()} |{Environment.NewLine}";
+            content += $"| **CE Filter** | {common.getDestinationFilter()} |{Environment.NewLine}";
 
             content += $"{Environment.NewLine}";
 
@@ -363,23 +363,7 @@ namespace DWLibary.Engines
 
         }
 
-        private string getSourceFilter()
-        {
-            string ret = String.Empty;
 
-            ret = common.curFieldMapping.entityMappingTasks[0].legs[0].sourceFilter == null ? "" : common.curFieldMapping.entityMappingTasks[0].legs[0].sourceFilter;
-
-            return ret;
-        }
-
-        private string getDestinationFilter()
-        {
-            string ret = String.Empty;
-
-            ret = common.curFieldMapping.entityMappingTasks[0].legs[0].reversedSourceFilter == null ? "" : common.curFieldMapping.entityMappingTasks[0].legs[0].reversedSourceFilter;
-
-            return ret;
-        }
 
         private DWEnums.DWSyncDirection getSyncDirection()
         {

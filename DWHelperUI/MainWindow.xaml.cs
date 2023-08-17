@@ -244,6 +244,12 @@ namespace DWHelperUI
 
             }
 
+            if(localMode == DWEnums.RunMode.compare)
+            {
+                ret.Add("-t");
+                ret.Add($"\"{targetFO.Text}\"");
+            }
+
             DWEnums.ExportOptions localExportOption = (DWEnums.ExportOptions)exportOption.SelectedValue;
             if (localExportOption != DWEnums.ExportOptions.Default)
             {
