@@ -23,5 +23,6 @@ namespace DWLibary.Struct
         public string displayName { get; set; }
         public DWEnvironmentDetail detail { get; set; }
         public string powerAppsEnvironment { get; set; }
+        public string foEnvironment { get; set; }
     }
 }

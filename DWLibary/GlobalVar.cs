@@ -47,6 +47,8 @@ namespace DWLibary
 
         public static List<ErrorMessage> errors { get; set; }
 
+        public static Options parsedOptions { get; set; }
+
         public static LoginData loginData
         {
             get
@@ -296,6 +298,8 @@ namespace DWLibary
             {
                 savedTokens.Remove(lookup);
             }
+
+            loginData.environment = foEnv;
 
             savedTokens.Add(GlobalVar.loginData);
             writeLoginTokens();

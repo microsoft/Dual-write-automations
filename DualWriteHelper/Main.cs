@@ -50,7 +50,7 @@ using (StreamReader sr = new StreamReader(@"DEBUGArgs.txt"))
         argsList.Add(value);
 
         if (value == "--runmode")
-            argsList.Add("export");
+            argsList.Add("compare");
 
     }
 
@@ -82,6 +82,8 @@ LogLevel level = LogLevel.Information;
 if(argsHandler.parsedOptions.logLevel != null && argsHandler.parsedOptions.logLevel != "")
     Enum.TryParse<LogLevel>(argsHandler.parsedOptions.logLevel, out level);
 
+
+
 Console.WriteLine($"LogLevel {level}");
 GlobalVar.initConfig();
 
@@ -100,7 +102,8 @@ static IHostBuilder CreateHostBuilderv2(string[] args, LogLevel _logLevel) =>
             builder.AddFile(Path.Combine(subFolder, "DEBUG" + fileName), _logLevel);
 
         builder.AddFile(Path.Combine(subFolder, "ERROR" + fileName), LogLevel.Error);
-        
+        builder.AddFile(Path.Combine(subFolder, "WARN" + fileName), LogLevel.Warning);
+
         builder.AddFile(Path.Combine(subFolder, "LOG-" + fileName), LogLevel.Information).SetMinimumLevel(LogLevel.Information);
 
         string appInsightConStr = String.Empty;

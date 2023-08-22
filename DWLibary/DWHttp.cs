@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using DWLibary.Struct;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,14 @@ namespace DWLibary
     {
         
         HttpRequestMessage _httpRequest;
-    
+        DWEnvironment env;
+
+
+        public DWHttp(DWEnvironment _env = default)
+        {
+            env = _env;
+        }
+
 
         public HttpRequestMessage buildDefaultHttpRequestPost()
         {
@@ -69,7 +77,15 @@ namespace DWLibary
 
         private void buildAuth()
         {
-            _httpRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GlobalVar.loginData.access_token);
+
+            LoginData localLogin = null;
+
+            if(env.foEnvironment != null)
+            {
+                localLogin = GlobalVar.savedTokens.Where(x => x.environment.ToUpper().Equals(env.foEnvironment.ToUpper())).FirstOrDefault();
+            }
+
+            _httpRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", localLogin != null ? localLogin.access_token : GlobalVar.loginData.access_token);
         }
         
 

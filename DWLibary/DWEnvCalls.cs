@@ -35,8 +35,10 @@ namespace DWLibary
 
                 string content = await response.Content.ReadAsStringAsync();
                 environment = JsonConvert.DeserializeObject<List<DWEnvironment>>(content)[0];
+                environment.foEnvironment = GlobalVar.foEnv;
 
-                
+
+
             }
             catch (Exception ex)
             {

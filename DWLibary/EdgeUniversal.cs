@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V111.Network;
-using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V111.DevToolsSessionDomains;
+using OpenQA.Selenium.DevTools.V114.Network;
+using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V114.DevToolsSessionDomains;
 using DWLibary;
 using OpenQA.Selenium;
 using OpenQA.Selenium.DevTools;
@@ -26,8 +26,9 @@ using Microsoft.VisualStudio.Services.CircuitBreaker;
 using System.Threading;
 using System.Linq.Expressions;
 using Microsoft.VisualStudio.Services.Common;
+using OpenQA.Selenium.DevTools.V114.Network;
 
-namespace DWHelper
+namespace DWLibary
 {
     public class EdgeUniversal
     {
@@ -54,6 +55,14 @@ namespace DWHelper
             service.Start();
         }
 
+        private void checkKillEdgeDriver()
+        {
+            foreach (Process p in Process.GetProcessesByName("msedgedriver"))
+            {
+                p.Kill();
+            }
+        }
+
         protected virtual void initNetworkAdapter()
         {
 
@@ -67,6 +76,14 @@ namespace DWHelper
 
         public void getToken()
         {
+
+
+            checkKillEdgeDriver();
+            var version = FileVersionInfo.GetVersionInfo(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe");
+
+            logger.LogInformation($"Your Edge version: {version.ProductMajorPart}");
+
+
             //if token was retrieved from the local files dont run selenium
             if (GlobalVar.loginData == null
                 || GlobalVar.loginData.access_token == null

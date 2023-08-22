@@ -40,15 +40,24 @@ namespace DWLibary.Engines
         }
 
 
-        public async Task runWikiUpload()
+        public async Task runWikiUpload(bool forceUpload = false)
         {
             wikiUpload = new ADOWikiUpload(logger);
+
+            if(forceUpload)
+            {
+                wikiUpload.useUpload = true;
+            }
+
+
 
             if (!wikiUpload.useUpload)
             {
                 logger.LogInformation("ADO Wikiupload won't be executed!");
                 return;
             }
+
+            await wikiUpload.init();
 
             logger.LogInformation($"Creating ADO Wiki...");
 
@@ -85,6 +94,9 @@ namespace DWLibary.Engines
                 if (currentMap.detail.pid == null)
                     continue;
 
+                if (!curMapConfig.groupSetting.wikiUpload)
+                    continue;
+
                 logger.LogInformation($"Starting creating page for {currentMap.detail.tName}");
 
                 curWikiOverview = new DWWikiOverview();
@@ -117,7 +129,7 @@ namespace DWLibary.Engines
 
             string content = String.Empty;
 
-            await common.getFieldMappingForMaps(currentMap);
+            await common.getFieldMappingForMaps(currentMap, curMapConfig.mapName);
 
             //headers
             content += $"## Map details {Environment.NewLine}{Environment.NewLine}";
@@ -135,8 +147,8 @@ namespace DWLibary.Engines
             content += $"| **Description** |{currentMap.detail.template.description} | {Environment.NewLine}";
             content += $"| **Direction** | {DWEnums.DescriptionAttr<DWEnums.DWSyncDirection>(getSyncDirection())} {Environment.NewLine}";
             content += $" **Integration key** | {await common.getCurrentKeys(currentMap)}{Environment.NewLine}";
-            content += $"| **FO Filter** | {getSourceFilter()} |{Environment.NewLine}";
-            content += $"| **CE Filter** | {getDestinationFilter()} |{Environment.NewLine}";
+            content += $"| **FO Filter** | {common.getSourceFilter()} |{Environment.NewLine}";
+            content += $"| **CE Filter** | {common.getDestinationFilter()} |{Environment.NewLine}";
 
             content += $"{Environment.NewLine}";
 
@@ -190,13 +202,21 @@ namespace DWLibary.Engines
 
             foreach (var map in wikiOverviewList)
             {
-                string link = wikiUpload.CombineForward(wikiUpload.wikiPath, map.subPageLink).Replace("\\", "/");
+                try
+                {
+                    string link = wikiUpload.CombineForward(wikiUpload.wikiPath, map.subPageLink).Replace("\\", "/");
 
-                link = link.Replace("-", "%2D");
-               // link = HttpUtility.UrlEncode(link);
-                link = link.Replace(" ", "-");
+                    link = link.Replace("-", "%2D");
+                    // link = HttpUtility.UrlEncode(link);
+                    link = link.Replace(" ", "-");
 
-                content += $"|{map.FOEntity} | {map.CEEntity} | [{map.FOEntity} - {map.CEEntity}]({link}) | {DWEnums.DescriptionAttr(map.syncDirection)} | {map.Version} | {map.Publisher} {Environment.NewLine}";
+                    content += $"|{map.FOEntity} | {map.CEEntity} | [{map.FOEntity} - {map.CEEntity}]({link}) | {DWEnums.DescriptionAttr(map.syncDirection)} | {map.Version} | {map.Publisher} {Environment.NewLine}";
+                }
+                catch ( Exception ex )
+                {
+                    
+                    logger.LogError(ex.ToString());
+                }
             }
 
 
@@ -343,23 +363,7 @@ namespace DWLibary.Engines
 
         }
 
-        private string getSourceFilter()
-        {
-            string ret = String.Empty;
 
-            ret = common.curFieldMapping.entityMappingTasks[0].legs[0].sourceFilter == null ? "" : common.curFieldMapping.entityMappingTasks[0].legs[0].sourceFilter;
-
-            return ret;
-        }
-
-        private string getDestinationFilter()
-        {
-            string ret = String.Empty;
-
-            ret = common.curFieldMapping.entityMappingTasks[0].legs[0].reversedSourceFilter == null ? "" : common.curFieldMapping.entityMappingTasks[0].legs[0].reversedSourceFilter;
-
-            return ret;
-        }
 
         private DWEnums.DWSyncDirection getSyncDirection()
         {

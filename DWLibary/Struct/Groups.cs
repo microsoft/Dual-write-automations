@@ -48,6 +48,13 @@ namespace DWLibary
             set { this["exceptionHandling"] = value; }
         }
 
+        [ConfigurationProperty("wikiUpload", DefaultValue = true, IsRequired = false, IsKey = false)]
+        public bool wikiUpload
+        {
+            get { return (bool)this["wikiUpload"]; }
+            set { this["wikiUpload"] = value; }
+        }
+
         public Group()
         {
             name = String.Empty;
@@ -55,6 +62,7 @@ namespace DWLibary
             retry = false;
             targetStatus = DWEnums.MapStatus.Running;
             exceptionHandling = DWEnums.ExceptionHandling.ignore;
+            wikiUpload = true;
         }
 
     }

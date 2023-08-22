@@ -253,7 +253,7 @@ namespace DWLibary.Engines
 
                 if (GlobalVar.exportState != DWEnums.MapStatus.None)
                 {
-                    if (map.detail.mapStatus != GlobalVar.exportState)
+                    if (map.detail.mapStatus != GlobalVar.exportState && GlobalVar.exportState != DWEnums.MapStatus.All)
                     {
                         logger.LogInformation($"Export of map {map.detail.tName} skipped as its in status {map.detail.mapStatus} and only status {GlobalVar.exportState} will be exported!");
                         continue;
@@ -813,7 +813,7 @@ namespace DWLibary.Engines
                     if (currentMapConfig.groupSetting.targetStatus == DWEnums.MapStatus.Stopped
                             && currentMap.detail.mapStatus == DWEnums.MapStatus.Running)
                     {
-                        ret = DWEnums.StartStop.start;
+                        ret = DWEnums.StartStop.stop;
                     }
 
                     break;

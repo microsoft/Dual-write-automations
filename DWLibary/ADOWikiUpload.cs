@@ -41,17 +41,16 @@ namespace DWLibary
         public ADOWikiUpload(ILogger _logger)
         {
             logger = _logger;
-            init().Wait();
+            loadParamaters();
+            
         }
 
 
-        private async Task init()
+        private void loadParamaters()
         {
-
-
-            foreach(ADOWikiParameter param in GlobalVar.dwSettings.ADOWikiParameters)
+            foreach (ADOWikiParameter param in GlobalVar.dwSettings.ADOWikiParameters)
             {
-                switch(param.Key.ToUpper())
+                switch (param.Key.ToUpper())
                 {
                     case "USEADOWIKIUPLOAD":
                         if (GlobalVar.useadowikiupload)
@@ -86,6 +85,11 @@ namespace DWLibary
 
                 }
             }
+        }
+
+        public async Task init()
+        {
+
 
             if (!useUpload)
                 return;
@@ -104,6 +108,12 @@ namespace DWLibary
             {
                 logger.LogError("Could not authenticate to the wiki, please check the configuration");
                 useUpload= false;
+            }
+
+            if(wiki == null)
+            {
+                logger.LogError($"Could not authenticate to the wiki or wiki was not found under project {projectName}, Wiki: {wikiName} , please check the configuration");
+                useUpload = false;
             }
 
 

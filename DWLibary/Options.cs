@@ -1,68 +1,14 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
-
-using CommandLine;
-using DWLibary;
+﻿using CommandLine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
-namespace DWHelper
+namespace DWLibary
 {
-    internal class ArgsHandler
-    {
-        public Options parsedOptions;
 
-        public void parseCommands(string[] args)
-        {
-
-            var parser = new CommandLine.Parser(s =>
-            {
-                s.CaseSensitive = false;
-                s.CaseInsensitiveEnumValues = true;
-            });
-            parser.ParseArguments<Options>(args)
-           .WithParsed<Options>(o =>
-           {
-               // parsing successful; go ahead and run the app
-               GlobalVar.username = o.username;
-               GlobalVar.password = o.password;
-               GlobalVar.foEnv = (new System.Uri(o.environment)).Host;
-               GlobalVar.configFileName = o.configFileName;
-               GlobalVar.mfasecret = o.mfasecret;
-               GlobalVar.useadowikiupload = o.useadowikiupload;
-               GlobalVar.adotoken = o.adotoken;
-
-               GlobalVar.runMode = o.runmode;
-               GlobalVar.exportState = o.status;
-               GlobalVar.exportOption = o.exportOption;
-
-               GlobalVar.noSolutions = o.noSolutions;
-
-               GlobalVar.newConfigFileName = o.newConfigFileName;
-
-               parsedOptions = o;
-
-               Console.WriteLine("Commandline arguments parsed and set");
-
-           })
-           .WithNotParsed<Options>(e =>
-           {
-               // parsing unsuccessful; deal with parsing errors
-               throw new Exception("Commandline parameters wrong");
-
-
-           });
-        }
-
-
-
-    }
-
-    class Options
+    public class Options
     {
         [Option('u', "username", HelpText = "Username to use")]
         public string username { get; set; }
@@ -84,6 +30,9 @@ namespace DWHelper
 
         [Option('l', Default = "", HelpText = "Log level, values Debug, Information, Error")]
         public string logLevel { get; set; }
+
+        [Option('t', "target environment", HelpText = "Target environment for comparison without https://www.")]
+        public string targetenvironment { get; set; }
 
         [Option("nosolutions", Default = false, HelpText = "Prevents solutions from beeing applied")]
         public bool noSolutions { get; set; }
