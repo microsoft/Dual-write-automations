@@ -24,6 +24,7 @@ namespace DWLibary.Struct
         public string metadataUrl { get; set; }
         public string environmentInfo { get; set; }
         public string powerAppsEnvironment { get; set; }
+        public string directUrl { get; set; }
         public bool isDevInstance { get; set; }
         public bool bypassApiHubConnector { get; set; }
         public bool needsIntegrationKey { get; set; }

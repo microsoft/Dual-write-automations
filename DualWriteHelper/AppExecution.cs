@@ -50,6 +50,9 @@ namespace DWHelper
                 //check if the given username is a user or a client id: 
                 //ClientId won't work
 
+                
+
+
                 if (GlobalVar.runMode == DWEnums.RunMode.compare)
                 {
                     //do something
@@ -110,35 +113,41 @@ namespace DWHelper
                 logger.LogInformation($"Runmode: {GlobalVar.runMode}");
 
                 DWMapEngine mapEngine = new DWMapEngine(dwEnv, logger);
-                if (GlobalVar.runMode == DWEnums.RunMode.export)
+
+                switch(GlobalVar.runMode)
                 {
-                    logger.LogInformation("Exporting config parameter is true");
-                    mapEngine.generateMapConfig().Wait();
+                    case DWEnums.RunMode.export:
+                        logger.LogInformation("Exporting config parameter is true");
+                        mapEngine.generateMapConfig().Wait();
+                        break;
+
+                    case DWEnums.RunMode.wikiUpload:
+                        DWADOWikiEngine adoWiki = new DWADOWikiEngine(dwEnv, logger);
+                        adoWiki.runWikiUpload(true).Wait();
+                        break;
+
+                    case DWEnums.RunMode.resetLink:
+                        ResetLinkEngine resetLink = new ResetLinkEngine(logger, dwEnv);
+                        resetLink.resetLink(GlobalVar.parsedOptions.forceReset).Wait();
+
+                        break;
+
+                    default:
+                        if (!GlobalVar.noSolutions)
+                        {
+                            DWSolutionEngine dWSolution = new DWSolutionEngine(dwEnv, logger);
+                            dWSolution.applySolutions().Wait();
+                        }
+
+
+                        mapEngine.applyMaps().Wait();
+
+
+                        // now do the Wiki Upload
+                        DWADOWikiEngine adoWikiDeploy = new DWADOWikiEngine(dwEnv, logger);
+                        adoWikiDeploy.runWikiUpload().Wait();
+                        break;
                 }
-                //only if Wiki upload should be done
-                else if(GlobalVar.runMode == DWEnums.RunMode.wikiUpload)
-                {
-                    // now do the Wiki Upload
-                    DWADOWikiEngine adoWiki = new DWADOWikiEngine(dwEnv, logger);
-                    adoWiki.runWikiUpload(true).Wait();
-                }
-                else
-                {
-                    if (!GlobalVar.noSolutions)
-                    {
-                        DWSolutionEngine dWSolution = new DWSolutionEngine(dwEnv, logger);
-                        dWSolution.applySolutions().Wait();
-                    }
-
-
-                    mapEngine.applyMaps().Wait();
-
-
-                    // now do the Wiki Upload
-                    DWADOWikiEngine adoWiki = new DWADOWikiEngine(dwEnv, logger);
-                    adoWiki.runWikiUpload().Wait();
-                }
-
 
 
                

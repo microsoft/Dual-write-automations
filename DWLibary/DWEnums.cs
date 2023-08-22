@@ -105,7 +105,9 @@ namespace DWLibary
             [Description("Wiki upload")]
             wikiUpload,
             [Description("Compare environment")]
-            compare
+            compare,
+            [Description("Reset link")]
+            resetLink
         };
 
 
