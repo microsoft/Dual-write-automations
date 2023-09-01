@@ -49,6 +49,7 @@ namespace DWLibary.Engines
             try
             {
                 HttpClient client = new HttpClient();
+                client.Timeout = new TimeSpan(0,0,300);
                 DWHttp dW = new DWHttp(env);
 
                 HttpRequestMessage req = dW.buildDefaultHttpRequestPost();
@@ -68,7 +69,7 @@ namespace DWLibary.Engines
                 //Debug Logging >>
                 logger.LogDebug($"Request URI: {req.RequestUri}");
                 //Debug Logging <<
-
+                logger.LogInformation("Sending ResetLink request, this can take longer...");
                 var responseStr = await client.SendAsync(req);
 
                 string content = await responseStr.Content.ReadAsStringAsync();
