@@ -250,12 +250,19 @@ namespace DWHelperUI
                 ret.Add($"\"{targetFO.Text}\"");
             }
 
+            if (localMode == DWEnums.RunMode.resetLink)
+            {
+                ret.Add("--forceReset");
+            }
+
             DWEnums.ExportOptions localExportOption = (DWEnums.ExportOptions)exportOption.SelectedValue;
             if (localExportOption != DWEnums.ExportOptions.Default)
             {
                 ret.Add("-o");
                 ret.Add($"\"{localExportOption}\"");
             }
+
+            
 
             if (applySolutions.IsChecked == false)
             {
@@ -490,6 +497,7 @@ namespace DWHelperUI
             exportSettings.Visibility = Visibility.Collapsed;
             newConfigSection.Visibility = Visibility.Collapsed;
             compareSettings.Visibility = Visibility.Collapsed;
+            forceResetSection.Visibility = Visibility.Collapsed;
         }
 
         private void comboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -523,6 +531,15 @@ namespace DWHelperUI
                     applySolutionPanel.Visibility = Visibility.Collapsed;
                     adowikiupload.IsEnabled = false;
                     adowikiuploadpanel.Visibility = Visibility.Collapsed;
+                    break;
+
+                case DWEnums.RunMode.resetLink:
+                    setDefaultVisibility();
+                    applySolutions.IsEnabled = false;
+                    applySolutionPanel.Visibility = Visibility.Collapsed;
+                    adowikiupload.IsEnabled = false;
+                    adowikiuploadpanel.Visibility = Visibility.Collapsed;
+                    forceResetSection.Visibility = Visibility.Visible;
                     break;
 
 

@@ -146,11 +146,13 @@
                        
                     </ComboBox>
                 </StackPanel>
-                <StackPanel Name="compareSettings">
+                <StackPanel Name="compareSettings" Margin="0 10">
                     <TextBlock Text="Target FO environment to compare"></TextBlock>
                     <TextBox x:Name="targetFO" ToolTip="Target environment to compare with" Foreground="#000" FontSize="13" Text="{Binding targetFO, Source={x:Static props:Settings.Default}}"/>
                 </StackPanel>
-
+                <StackPanel Margin="0 10" Grid.Column="0" Grid.Row="6" Name="forceResetSection">
+                    <CheckBox x:Name="forceReset" IsChecked="{Binding forceReset, Source={x:Static props:Settings.Default}}"  Foreground="#000" FontSize="13"  Content="Force reset link"  />
+                </StackPanel>
             </StackPanel>
     
             <StackPanel Margin="20 10" Grid.Column="1" Grid.Row="7" Name="logSettings">

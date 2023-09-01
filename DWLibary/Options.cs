@@ -37,6 +37,9 @@ namespace DWLibary
         [Option("nosolutions", Default = false, HelpText = "Prevents solutions from beeing applied")]
         public bool noSolutions { get; set; }
 
+        [Option("forceReset", Default = false, HelpText = "Forces reset when using ResetLink")]
+        public bool forceReset { get; set; }
+
         [Option("runmode", Default = DWEnums.RunMode.none, HelpText = "Overwrites the runmode in the config file, possible: deployment, deployInitialSync, start, stop, pause, export")]
         public DWEnums.RunMode runmode { get; set; }
 

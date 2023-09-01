@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V114.Network;
-using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V114.DevToolsSessionDomains;
+using OpenQA.Selenium.DevTools.V116.Network;
+using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V116.DevToolsSessionDomains;
 using DWLibary;
 using OpenQA.Selenium;
 using OpenQA.Selenium.DevTools;
@@ -26,7 +26,7 @@ using Microsoft.VisualStudio.Services.CircuitBreaker;
 using System.Threading;
 using System.Linq.Expressions;
 using Microsoft.VisualStudio.Services.Common;
-using OpenQA.Selenium.DevTools.V114.Network;
+using OpenQA.Selenium.DevTools.V116.Network;
 
 namespace DWLibary
 {
@@ -65,12 +65,8 @@ namespace DWLibary
 
         protected virtual void initNetworkAdapter()
         {
-
-
             networkAdapter = new NetworkAdapter(session);
-
             networkAdapter.Enable(new EnableCommandSettings()).GetAwaiter().GetResult();
-
             networkAdapter.ResponseReceived += NetworkAdapter_ResponseReceived;
         }
 
