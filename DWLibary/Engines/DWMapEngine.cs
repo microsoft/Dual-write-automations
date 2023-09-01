@@ -547,6 +547,10 @@ namespace DWLibary.Engines
                         
                     }
 
+                    //no map changes when doing these operations
+                    if(GlobalVar.runMode == DWEnums.RunMode.start || GlobalVar.runMode == DWEnums.RunMode.stop || GlobalVar.runMode == DWEnums.RunMode.pause)
+                        applyTemplate = currentMap.detail.template;
+
                     //check init maps
                     //make sure previous template is always assigned
                     previousTemplate = currentMap.detail.template;
