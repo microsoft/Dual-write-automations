@@ -27,6 +27,7 @@ using System.Threading;
 using System.Linq.Expressions;
 using Microsoft.VisualStudio.Services.Common;
 using OpenQA.Selenium.DevTools.V116.Network;
+using Microsoft.VisualStudio.Services.Users;
 
 namespace DWLibary
 {
@@ -70,9 +71,25 @@ namespace DWLibary
             networkAdapter.ResponseReceived += NetworkAdapter_ResponseReceived;
         }
 
+        private bool useClientAuthentication()
+        {
+            if(GlobalVar.parsedOptions.tenant != String.Empty || GlobalVar.parsedOptions.clientId != String.Empty)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public void getToken()
         {
 
+            if(useClientAuthentication())
+            {
+                ServicePrincipalAuth principalAuth = new ServicePrincipalAuth(logger);
+                principalAuth.authenticate().Wait();
+                return;
+            }
 
             checkKillEdgeDriver();
             var version = FileVersionInfo.GetVersionInfo(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe");
@@ -96,8 +113,13 @@ namespace DWLibary
                 var options = new OpenQA.Selenium.Edge.EdgeOptions();
 
                 string localFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                localFolder = Path.Combine(localFolder, "Microsoft\\Edge\\User Data");
                 options.AddArguments("-inprivate");
-                //options.AddArguments("headless"); //no browser will open 
+                //# Here you specify the actual profile folder    
+                //options.AddArguments("profile-directory=Profile 1");
+               // options.AddArguments($"user-data-dir={localFolder}");
+
+
 
                 driver = new EdgeDriver(service, options);
                
