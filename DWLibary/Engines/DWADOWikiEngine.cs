@@ -56,18 +56,24 @@ namespace DWLibary.Engines
                 logger.LogInformation("ADO Wikiupload won't be executed!");
                 return;
             }
+            //this will check if connection can be established
+            if (await wikiUpload.init())
+            {
 
-            await wikiUpload.init();
+                logger.LogInformation($"Creating ADO Wiki...");
 
-            logger.LogInformation($"Creating ADO Wiki...");
+                path = "/DualWrite map configuration";
+                //create the main Page structure
+                await checkCreateMainPage();
 
-            path = "/DualWrite map configuration";
-            //create the main Page structure
-            await checkCreateMainPage();
+                await runMapUpload();
 
-            await runMapUpload();
-
-            logger.LogInformation($"Completed creating ADO WiKi");
+                logger.LogInformation($"Completed creating ADO WiKi");
+            }
+            else
+            {
+                logger.LogInformation("ADO Wikiupload could not initialize properly, please check the logs!");
+            }
 
         }
 

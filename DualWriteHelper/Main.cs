@@ -58,7 +58,7 @@ if (File.Exists(@"DEBUGArgs.txt"))
         }
         if (argsList.Count > 0)
         {
-            argsList.Add("--notinprivate");
+            //argsList.Add("--notinprivate");
 
             args = new string[argsList.Count];
 
