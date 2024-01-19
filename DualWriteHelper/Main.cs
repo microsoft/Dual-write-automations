@@ -28,41 +28,45 @@ using Microsoft.Extensions.Logging.ApplicationInsights;
 //};
 
 
-
-using (StreamReader sr = new StreamReader(@"DEBUGArgs.txt"))
+if (File.Exists(@"DEBUGArgs.txt"))
 {
-    
-    var data = sr.ReadToEnd();
-
-    data = data.Replace("\r", "");
-    data = data.Replace("\n", "");
-
-    string exp = @"((?:|^\b|\s+)--(?<option_1>.+?)(?:\s|=|$)(?!-)(?<value_1>[\""\'].+?[\""\']|.+?(?:\s|$))?|(?:|^\b)-(?<option_2>.)(?:\s|=|$)(?!-)(?<value_2>[\""\'].+?[\""\']|.+?(?:\s|$))?|(?<arg>[\""\'].+?[\""\']|.+?(?:\s|$)))";
-
-    MatchCollection collection = Regex.Matches(data, exp);
-    List<string> argsList = new List<string>();
-
-    foreach(Match match in collection)
-    
+    using (StreamReader sr = new StreamReader(@"DEBUGArgs.txt"))
     {
-        string value = match.Value.Trim();
-        value = value.Replace("\"", "");
-        argsList.Add(value);
 
-        if (value == "--runmode")
-            argsList.Add("ResetLink");
+        var data = sr.ReadToEnd();
+
+        data = data.Replace("\r", "");
+        data = data.Replace("\n", "");
+
+        string exp = @"((?:|^\b|\s+)--(?<option_1>.+?)(?:\s|=|$)(?!-)(?<value_1>[\""\'].+?[\""\']|.+?(?:\s|$))?|(?:|^\b)-(?<option_2>.)(?:\s|=|$)(?!-)(?<value_2>[\""\'].+?[\""\']|.+?(?:\s|$))?|(?<arg>[\""\'].+?[\""\']|.+?(?:\s|$)))";
+
+        MatchCollection collection = Regex.Matches(data, exp);
+        List<string> argsList = new List<string>();
+
+        foreach (Match match in collection)
+
+        {
+            string value = match.Value.Trim();
+            value = value.Replace("\"", "");
+            argsList.Add(value);
+
+            if (value == "--runmode")
+                argsList.Add("wikiupload");
+
+            
+
+        }
+        if (argsList.Count > 0)
+        {
+            argsList.Add("--notinprivate");
+
+            args = new string[argsList.Count];
+
+            argsList.CopyTo(args, 0);
+        }
+
 
     }
-
-
-    if (argsList.Count > 0)
-    {
-        args = new string[argsList.Count];
-
-        argsList.CopyTo(args, 0);
-    }
-
-
 }
 
 

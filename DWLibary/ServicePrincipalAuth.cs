@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Azure.Core;
 using Azure.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
@@ -8,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,15 +31,11 @@ namespace DWLibary
             try
             {
                 var clientCredential = new ClientCredential(GlobalVar.username, GlobalVar.password);
-                AuthenticationContext context = new AuthenticationContext($"https://login.microsoftonline.com/{GlobalVar.tenant}/", false);
-                
-                AuthenticationResult authenticationResult = await context.AcquireTokenAsync("https://IntegratorApp.com", clientCredential);
-                ret = true;
 
-                GlobalVar.loginData = new Struct.LoginData();
-                GlobalVar.loginData.authResult = authenticationResult;
+                var credential = new UsernamePasswordCredential(GlobalVar.username, GlobalVar.password, GlobalVar.parsedOptions.tenant, GlobalVar.parsedOptions.clientId);
+                var token = await credential.GetTokenAsync(new TokenRequestContext(new[] { "https://IntegratorApp.com/.default" }));
 
-                GlobalVar.loginData.expires_in = Convert.ToInt32((authenticationResult.ExpiresOn - DateTime.UtcNow).TotalSeconds);
+                GlobalVar.loginData.accessToken = token;
 
             }
             catch(Exception ex)
@@ -48,6 +46,7 @@ namespace DWLibary
             return ret;
 
         }
+
 
 
     }

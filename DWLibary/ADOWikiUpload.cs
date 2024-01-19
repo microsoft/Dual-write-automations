@@ -15,6 +15,7 @@ using System.Diagnostics.Metrics;
 using System.Configuration;
 using System.IO;
 using Microsoft.Extensions.Logging;
+using Azure;
 
 namespace DWLibary
 {
@@ -179,6 +180,11 @@ namespace DWLibary
                 WikiPageCreateOrUpdateParameters parameters = new WikiPageCreateOrUpdateParameters();
                 parameters.Content = content;
 
+                GitVersionDescriptor gitVersion = null;
+                if(wiki.Versions.Any())
+                {
+                    gitVersion = wiki.Versions.FirstOrDefault();
+                }
 
 
                 WikiPageResponse wikiPage = null;
@@ -189,18 +195,15 @@ namespace DWLibary
                 }
                 catch { }
 
-
-               
-
                 if (wikiPage != null)
                 {
                     if (updatePage)
-                        await wikiClient.CreateOrUpdatePageAsync(parameters, wiki.ProjectId, wiki.Id, finalPath, wikiPage.ETag.FirstOrDefault());
+                        await wikiClient.CreateOrUpdatePageAsync(parameters, wiki.ProjectId, wiki.Id, finalPath, wikiPage.ETag.FirstOrDefault(), null,gitVersion);
                 }
                 else
 
                 {
-                    await wikiClient.CreateOrUpdatePageAsync(parameters, wiki.ProjectId, wiki.Id, finalPath, "");
+                    await wikiClient.CreateOrUpdatePageAsync(parameters, wiki.ProjectId, wiki.Id, finalPath,"",null, gitVersion);
                 }
 
             }

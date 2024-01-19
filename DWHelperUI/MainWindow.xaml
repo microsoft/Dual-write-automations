@@ -44,6 +44,7 @@
                 <TextBlock Text="Username" Foreground="#000" FontSize="13" Margin="0 0 0 8"/>
 
                 <TextBox x:Name="username" ToolTip="Username which has access to the Dual-write interface" Text="{Binding username, Source={x:Static props:Settings.Default}}" Foreground="#000" FontSize="13" />
+                <CheckBox Margin="0 10" x:Name="disablePrivateBrowser" IsChecked="{Binding disablePrivateBrowser, Source={x:Static props:Settings.Default}}"  Foreground="#000" FontSize="13"  Content="Disable In Private browser"  />
                 <!--<TextBlock Text="Username which has access to manage the DW maps" FontSize="10"></TextBlock>-->
             </StackPanel>
             <!--<uc:MyTextBox Grid.Column="0" Grid.Row="3" Caption="Username / E-Mail" Hint="Enter your email"/>-->
@@ -107,6 +108,7 @@
 
             <StackPanel Margin="20 10" Grid.Column="0" Grid.Row="6" Name="applySolutionPanel">
                 <CheckBox x:Name="applySolutions" IsChecked="{Binding applySolutionCheckbox, Source={x:Static props:Settings.Default}}"  Foreground="#000" FontSize="13"  Content="Apply Solutions"  />
+               
             </StackPanel>
 
             <StackPanel Margin="20 10" Grid.Column="1" Grid.Row="6" Name="adowikiuploadpanel">

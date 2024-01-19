@@ -262,6 +262,10 @@ namespace DWHelperUI
                 ret.Add($"\"{localExportOption}\"");
             }
 
+            if(disablePrivateBrowser.IsChecked == true)
+            {
+                ret.Add("--notinprivate");
+            }
             
 
             if (applySolutions.IsChecked == false)

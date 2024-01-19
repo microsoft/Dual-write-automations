@@ -58,6 +58,7 @@ namespace DWLibary
             set
             {
                 _loginData = value;
+                
                 saveLoginData();
             }
 

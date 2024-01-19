@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Azure.Core;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -35,16 +36,17 @@ namespace DWLibary.Struct
         public string client_info { get; set; }
         public DateTime tokenRefreshDate { get; set; }
 
-        private AuthenticationResult _authResult;
-        public AuthenticationResult authResult { get
+        private AccessToken _accessToken;
+        public AccessToken accessToken { get
             {
-                return _authResult;
+                return _accessToken;
 
             } set
             {
-                _authResult = value;
-                if(value != null)
-                    _access_token = value.AccessToken;
+                _accessToken = value;
+                
+                if(value.Token != null)
+                    _access_token = value.Token;
                 //tokenRefreshDate = value.
 
             }

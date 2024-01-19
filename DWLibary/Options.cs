@@ -55,5 +55,14 @@ namespace DWLibary
         [Option('o', Default = DWEnums.ExportOptions.Default, HelpText = "Additional options for export")]
         public DWEnums.ExportOptions exportOption { get; set; }
 
+        [Option("clientid", Default = "", HelpText = "Client ID, App registration")]
+        public string clientId { get; set; }
+
+        [Option("tenant", Default = "", HelpText = "Azure tenant ID")]
+        public string tenant { get; set; }
+
+        [Option("notinprivate", Default = false, HelpText = "Disable opening private browsing")]
+        public bool notinprivate { get; set; }
+
     }
 }

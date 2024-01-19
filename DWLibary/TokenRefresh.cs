@@ -71,24 +71,34 @@ namespace DWLibary
 
             while(true)
             {
-                TimeSpan ts = GlobalVar.loginData.tokenRefreshDate.AddSeconds(GlobalVar.loginData.expires_in) - DateTime.Now;
 
-                int ms = (int)ts.TotalMilliseconds - (60 * 1000 * 5);
-
-                if(ms > 0)
-                    Thread.Sleep(ms); // 5 mins deduction
-
-                if(GlobalVar.loginData.authResult != null)
+                if(GlobalVar.loginData.accessToken.Token != null)
                 {
+
+                    TimeSpan timeToExpire = GlobalVar.loginData.accessToken.ExpiresOn.UtcDateTime - DateTime.UtcNow;
+
+                    int ms = (int)timeToExpire.TotalMilliseconds - (60 * 1000 * 5);
+
+                    if (ms > 0)
+                        Thread.Sleep(ms); // 5 mins deduction
+
                     ServicePrincipalAuth servicePrincipalAuth = new ServicePrincipalAuth(logger);
                     await servicePrincipalAuth.authenticate();
                 }
                 else
                 {
+                    TimeSpan ts = GlobalVar.loginData.tokenRefreshDate.AddSeconds(GlobalVar.loginData.expires_in) - DateTime.Now;
+
+                    int ms = (int)ts.TotalMilliseconds - (60 * 1000 * 5);
+
+                    if (ms > 0)
+                        Thread.Sleep(ms); // 5 mins deduction
+
                     await getRefreshToken();
+
                 }
 
-                
+
 
 
             }

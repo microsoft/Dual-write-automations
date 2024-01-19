@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V116.Network;
-using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V116.DevToolsSessionDomains;
+using OpenQA.Selenium.DevTools.V120.Network;
+using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V120.DevToolsSessionDomains;
 using DWLibary;
 using OpenQA.Selenium;
 using OpenQA.Selenium.DevTools;
@@ -20,13 +20,7 @@ using System.Diagnostics;
 using System.IO.Compression;
 using System.Net;
 using System.Runtime.InteropServices;
-using OpenQA.Selenium.Chrome;
-using Newtonsoft.Json.Linq;
-using Microsoft.VisualStudio.Services.CircuitBreaker;
-using System.Threading;
-using System.Linq.Expressions;
-using Microsoft.VisualStudio.Services.Common;
-using OpenQA.Selenium.DevTools.V116.Network;
+
 
 namespace DWLibary
 {
@@ -70,9 +64,25 @@ namespace DWLibary
             networkAdapter.ResponseReceived += NetworkAdapter_ResponseReceived;
         }
 
+        private bool useClientAuthentication()
+        {
+            if(GlobalVar.parsedOptions.tenant != String.Empty || GlobalVar.parsedOptions.clientId != String.Empty)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public void getToken()
         {
 
+            if(useClientAuthentication())
+            {
+                ServicePrincipalAuth principalAuth = new ServicePrincipalAuth(logger);
+                principalAuth.authenticate().Wait();
+                return;
+            }
 
             checkKillEdgeDriver();
             var version = FileVersionInfo.GetVersionInfo(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe");
@@ -96,8 +106,10 @@ namespace DWLibary
                 var options = new OpenQA.Selenium.Edge.EdgeOptions();
 
                 string localFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                options.AddArguments("-inprivate");
-                //options.AddArguments("headless"); //no browser will open 
+                localFolder = Path.Combine(localFolder, "Microsoft\\Edge\\User Data");
+
+                if(GlobalVar.parsedOptions.notinprivate == null ||  !GlobalVar.parsedOptions.notinprivate)
+                    options.AddArguments("-inprivate");
 
                 driver = new EdgeDriver(service, options);
                
