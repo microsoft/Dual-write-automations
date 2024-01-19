@@ -7,9 +7,9 @@
     <Nullable>enable</Nullable>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     
-    <PublishSingleFile>true</PublishSingleFile>
+    <!--<PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>-->
     
   </PropertyGroup>
 
