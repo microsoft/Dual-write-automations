@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V116.Network;
-using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V116.DevToolsSessionDomains;
+using OpenQA.Selenium.DevTools.V120.Network;
+using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V120.DevToolsSessionDomains;
 using DWLibary;
 using OpenQA.Selenium;
 using OpenQA.Selenium.DevTools;
@@ -20,14 +20,7 @@ using System.Diagnostics;
 using System.IO.Compression;
 using System.Net;
 using System.Runtime.InteropServices;
-using OpenQA.Selenium.Chrome;
-using Newtonsoft.Json.Linq;
-using Microsoft.VisualStudio.Services.CircuitBreaker;
-using System.Threading;
-using System.Linq.Expressions;
-using Microsoft.VisualStudio.Services.Common;
-using OpenQA.Selenium.DevTools.V116.Network;
-using Microsoft.VisualStudio.Services.Users;
+
 
 namespace DWLibary
 {
@@ -114,12 +107,9 @@ namespace DWLibary
 
                 string localFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 localFolder = Path.Combine(localFolder, "Microsoft\\Edge\\User Data");
-                options.AddArguments("-inprivate");
-                //# Here you specify the actual profile folder    
-                //options.AddArguments("profile-directory=Profile 1");
-               // options.AddArguments($"user-data-dir={localFolder}");
 
-
+                if(GlobalVar.parsedOptions.notinprivate == null ||  !GlobalVar.parsedOptions.notinprivate)
+                    options.AddArguments("-inprivate");
 
                 driver = new EdgeDriver(service, options);
                

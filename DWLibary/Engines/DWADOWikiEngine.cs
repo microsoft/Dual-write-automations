@@ -137,7 +137,7 @@ namespace DWLibary.Engines
             content += $"|--|--|{Environment.NewLine}";
 
             //{Environment.NewLine}
-            string versionStr = $"{currentMap.detail.template.version.major}.{currentMap.detail.template.version.minor}.{currentMap.detail.template.version.revision}.{currentMap.detail.template.version.build}";
+            string versionStr = $"{currentMap.detail.template.version.major}.{currentMap.detail.template.version.minor}.{currentMap.detail.template.version.build}.{currentMap.detail.template.version.revision}";
 
 
             content += $"| **FO Entity** | {getFOEntity()} | {Environment.NewLine}";

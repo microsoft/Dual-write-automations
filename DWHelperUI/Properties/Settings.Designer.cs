@@ -189,5 +189,17 @@ namespace DWHelperUI.Properties {
                 this["forceReset"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool disablePrivateBrowser {
+            get {
+                return ((bool)(this["disablePrivateBrowser"]));
+            }
+            set {
+                this["disablePrivateBrowser"] = value;
+            }
+        }
     }
 }

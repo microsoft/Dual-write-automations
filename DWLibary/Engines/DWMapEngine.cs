@@ -1024,15 +1024,21 @@ namespace DWLibary.Engines
             
 
             //check the errors if the current entity was affected
-            errors = errors.Where(x => x.errorMessage.ToUpper().Contains("/" + currentMap.rightEntity.name.ToUpper())).ToList();
+            errors = errors.Where(x => x.errorMessage.ToUpper().Contains(currentMap.rightEntity.name.ToUpper())).ToList();
 
             logger.LogDebug($"{prefix}: Errorcount inital sync failure: {errors.Count}");
 
             /*
              * Couldn't resolve the guid for the field: msdyn_mainrefillingwarehouse.msdyn_warehouseidentifier. The lookup value was not found: XXXX. Try this URL(s) to check if the reference data exists: https://XYZ.crm4.dynamics.com/api/data/v9.0/msdyn_warehouses?$select=msdyn_warehouseidentifier,msdyn_warehouseid&$filter=msdyn_warehouseidentifier eq 'XXXX'
-             */
+             * OR
+             * Couldn't resolve the guid for the field: msdyn_hierarchy,msdyn_parentproductcategory.msdyn_name. The lookup value was not found: Channel navigation hierarchy|Weight Benches.
 
-            if(errors.Count > 0 && previousResponse.Count > 0 && errorCountDecreased)
+
+             */
+           
+
+
+            if (errors.Count > 0 && previousResponse.Count > 0 && errorCountDecreased)
             {
                 ret = true;
             }

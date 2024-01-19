@@ -61,5 +61,8 @@ namespace DWLibary
         [Option("tenant", Default = "", HelpText = "Azure tenant ID")]
         public string tenant { get; set; }
 
+        [Option("notinprivate", Default = false, HelpText = "Disable opening private browsing")]
+        public bool notinprivate { get; set; }
+
     }
 }
