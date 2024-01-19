@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug'">
-    <None Update="TEST.config" CopyToOutputDirectory="Never" />
+    <None Update="TEST.config" CopyToOutputDirectory="Always" />
     <None Update="DEMO.config" CopyToOutputDirectory="PreserveNewest" />
     <None Update="DEBUGArgs.txt" CopyToOutputDirectory="Always" />
   </ItemGroup>

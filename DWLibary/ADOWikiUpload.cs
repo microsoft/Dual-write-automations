@@ -88,12 +88,11 @@ namespace DWLibary
             }
         }
 
-        public async Task init()
+        public async Task<bool> init()
         {
 
-
             if (!useUpload)
-                return;
+                return useUpload;
 
             var creds = new VssBasicCredential(string.Empty, pat);
 
@@ -113,9 +112,12 @@ namespace DWLibary
 
             if(wiki == null)
             {
-                logger.LogError($"Could not authenticate to the wiki or wiki was not found under project {projectName}, Wiki: {wikiName} , please check the configuration");
+                logger.LogError($"Could not authenticate to the wiki or wiki was not found under project {projectName}, Wiki: {wikiName} , please check the configuration and make sure your access token has Read / Write for Wiki");
                 useUpload = false;
             }
+
+
+            return useUpload;
 
 
         }
