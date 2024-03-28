@@ -785,8 +785,8 @@ namespace DWLibary.Engines
                     break;
 
                 case DWEnums.RunMode.start:
-                    if (currentMap.detail.mapStatus == DWEnums.MapStatus.Stopped
-                        || currentMap.detail.mapStatus == DWEnums.MapStatus.NotRunning)
+                    if ((currentMap.detail.mapStatus == DWEnums.MapStatus.Stopped
+                        || currentMap.detail.mapStatus == DWEnums.MapStatus.NotRunning ) && currentMapConfig.groupSetting.targetStatus != DWEnums.MapStatus.Stopped)
                         ret = true;
                     if (currentMap.detail.mapStatus == DWEnums.MapStatus.Paused)
                     {
@@ -1691,7 +1691,32 @@ namespace DWLibary.Engines
                     actionDetail.cid = env.cid;
 
 
-                    MapStartStopActionParameters actionParam = new MapStartStopActionParameters();
+                    //MapStartStopActionParameters actionParam = new MapStartStopActionParameters();
+
+                    if(GlobalVar.parsedOptions.catchupsetting != DWEnums.CatchUpSyncOption.Default)
+                    {
+                        var actionParam = new MapCatchUpParameter();
+                        var catchupParam = new Dualwriteskipcatchupsyncparameters();
+
+                        
+                        switch(GlobalVar.parsedOptions.catchupsetting)
+                        {
+                            case DWEnums.CatchUpSyncOption.BackendQueueProcessing:
+                                catchupParam.skipCatchUpSyncPreserveData = true;
+                                break;
+
+                            case DWEnums.CatchUpSyncOption.DeleteQueueProcessing:
+                                catchupParam.skipCatchUpSyncPreserveData = false;
+                                break;
+                        }
+
+                        actionParam.dualWriteSkipCatchUpSyncParameters = catchupParam;
+
+                        actionDetail.parameters = actionParam;
+
+                    }
+
+                    
                    // actionDetail.parameters = actionParam;
 
                     action.details.Add(actionDetail);

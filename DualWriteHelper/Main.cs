@@ -51,14 +51,15 @@ if (File.Exists(@"DEBUGArgs.txt"))
             argsList.Add(value);
 
             if (value == "--runmode")
-                argsList.Add("wikiupload");
+                argsList.Add("start");
 
             
 
         }
         if (argsList.Count > 0)
         {
-            //argsList.Add("--notinprivate");
+            argsList.Add("--catchupsetting"); 
+            argsList.Add("BackendQueueProcessing");
 
             args = new string[argsList.Count];
 

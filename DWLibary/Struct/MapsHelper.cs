@@ -18,8 +18,14 @@ namespace DWLibary.Struct
 
     public class MapStartStopActionParameters
     {
+
         public bool skipInitialSync { get; set; }
         public MapStartStopActionConflictResolution conflictResolution { get; set; }
+    }
+
+    public class MapCatchUpParameter
+    {
+        public Dualwriteskipcatchupsyncparameters dualWriteSkipCatchUpSyncParameters { get; set; }
     }
 
     public struct MapStartStopActionDetail
@@ -27,7 +33,7 @@ namespace DWLibary.Struct
         public string tid { get; set; }
         public string pid { get; set; }
         public string cid { get; set; }
-        public MapStartStopActionParameters parameters { get; set; }
+        public dynamic parameters { get; set; }
     }
 
     public struct MapStartStopAction
@@ -41,4 +47,17 @@ namespace DWLibary.Struct
         public string requestId { get; set; }
     }
 
+    public class Parameters
+    {
+        public Dualwriteskipcatchupsyncparameters dualWriteSkipCatchUpSyncParameters { get; set; }
+    }
+
+    public struct Dualwriteskipcatchupsyncparameters
+    {
+        public bool skipCatchUpSyncPreserveData { get; set; }
+    }
+
+
 }
+
+

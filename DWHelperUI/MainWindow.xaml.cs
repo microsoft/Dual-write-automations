@@ -24,6 +24,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
+using Wpf.Ui.Appearance;
 
 namespace DWHelperUI
 {
@@ -32,7 +34,7 @@ namespace DWHelperUI
     /// </summary>
     
 
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         private Process process;/// 
         ConcurrentQueue<string> outputQueue;//= new ConcurrentQueue<string>();
@@ -52,22 +54,6 @@ namespace DWHelperUI
 
         }
 
-        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                this.DragMove();
-            }
-        }
-
-        private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ClickCount == 2)
-            {
-                this.WindowState = WindowState.Normal;
-            }
-        }
-
         private void showHideSettings(bool hide)
         {
             Visibility settingsVisibility;
@@ -85,6 +71,7 @@ namespace DWHelperUI
 
 
             runSettings.Visibility = settingsVisibility;
+            runSettingsDetail.Visibility = settingsVisibility;
             configSettings.Visibility = settingsVisibility;
             actions.Visibility = settingsVisibility;
             logSettings.Visibility = settingsVisibility;
@@ -104,13 +91,14 @@ namespace DWHelperUI
         private void StartProcess_Click(object sender, RoutedEventArgs e)
         {
 
-            showHideSettings(true);
+           
 
             if (!isValidStart())
             {
                // outputLog.AppendText("")
                 return;
             }
+            showHideSettings(true);
             outputQueue = new ConcurrentQueue<string>();
 
             process = new Process();
@@ -167,7 +155,7 @@ namespace DWHelperUI
                 {
                     while (outputQueue.TryDequeue(out string line))
                     {
-                        Dispatcher.Invoke(() =>
+                        App.Current.Dispatcher.Invoke(() =>
                         {
                             if (line != null && line.Length > 0)
                             {
@@ -189,7 +177,7 @@ namespace DWHelperUI
 
         private void Process_Exited(object? sender, EventArgs e)
         {
-            Dispatcher.Invoke(() =>
+            App.Current.Dispatcher.Invoke(() =>
             {
                 StartProcess.IsEnabled = true;
                 StopProcess.IsEnabled = false;
@@ -244,7 +232,16 @@ namespace DWHelperUI
 
             }
 
-            if(localMode == DWEnums.RunMode.compare)
+
+            DWEnums.CatchUpSyncOption catchUpLocal = (DWEnums.CatchUpSyncOption)catchUpSetting.SelectedValue;
+
+            if (catchUpLocal != null && catchUpLocal != DWEnums.CatchUpSyncOption.Default)
+            {
+                ret.Add("--catchupsetting");
+                ret.Add($"\"{localMode.ToString()}\"");
+            }
+
+            if (localMode == DWEnums.RunMode.compare)
             {
                 ret.Add("-t");
                 ret.Add($"\"{targetFO.Text}\"");
@@ -310,7 +307,7 @@ namespace DWHelperUI
         {
             if (!String.IsNullOrEmpty(outLine.Data))
             {
-                Dispatcher.Invoke(() =>
+                App.Current.Dispatcher.Invoke(() =>
                 {
                     var data = outLine.Data.ToString(); 
                     data = data.Replace("info: DWHelper.DWHostedService[0]", "");
@@ -491,6 +488,20 @@ namespace DWHelperUI
                     exportOption.SelectedItem = item;
             }
 
+
+
+            catchUpSetting.Items.Clear();
+
+
+            catchUpSetting.ItemsSource = Enum.GetValues(typeof(DWEnums.CatchUpSyncOption))
+            .Cast<DWEnums.CatchUpSyncOption>()
+            .Select(rm => new
+            {
+                Value = rm,
+                Description = DWEnums.DescriptionAttr<DWEnums.CatchUpSyncOption>(rm)
+            });
+
+
         }
         private void setDefaultVisibility()
         {
@@ -502,6 +513,7 @@ namespace DWHelperUI
             newConfigSection.Visibility = Visibility.Collapsed;
             compareSettings.Visibility = Visibility.Collapsed;
             forceResetSection.Visibility = Visibility.Collapsed;
+            CatchUpSettings.Visibility = Visibility.Collapsed;
         }
 
         private void comboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -546,6 +558,11 @@ namespace DWHelperUI
                     forceResetSection.Visibility = Visibility.Visible;
                     break;
 
+                case DWEnums.RunMode.start:
+                    setDefaultVisibility();
+                    CatchUpSettings.Visibility = Visibility.Visible;
+                    break;
+
 
                 default:
                     setDefaultVisibility();
@@ -575,10 +592,10 @@ namespace DWHelperUI
 
         }
 
-        private void Close_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
+        //private void Close_Click(object sender, RoutedEventArgs e)
+        //{
+        //    this.Close();
+        //}
 
         private void showLogs_Click(object sender, RoutedEventArgs e)
         {
@@ -642,6 +659,16 @@ namespace DWHelperUI
             {
                 Process.Start(new ProcessStartInfo(file) { UseShellExecute = true });
             }
+        }
+
+        private void OnLightThemeRadioButtonChecked(object sender, RoutedEventArgs e)
+        {
+            Wpf.Ui.Appearance.ApplicationThemeManager.Apply(ApplicationTheme.Light);
+        }
+
+        private void OnDarkThemeRadioButtonChecked(object sender, RoutedEventArgs e)
+        {
+            Wpf.Ui.Appearance.ApplicationThemeManager.Apply(ApplicationTheme.Dark);
         }
     }
 }
