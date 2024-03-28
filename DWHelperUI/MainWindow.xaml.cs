@@ -26,6 +26,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Wpf.Ui.Appearance;
+using static DWLibary.DWEnums;
 
 namespace DWHelperUI
 {
@@ -69,7 +70,8 @@ namespace DWHelperUI
 
             }
 
-
+            adowikiuploadpanel.Visibility = settingsVisibility;
+            applySolutionPanel.Visibility = settingsVisibility;
             runSettings.Visibility = settingsVisibility;
             runSettingsDetail.Visibility = settingsVisibility;
             configSettings.Visibility = settingsVisibility;
@@ -233,7 +235,7 @@ namespace DWHelperUI
             }
 
 
-            DWEnums.CatchUpSyncOption catchUpLocal = (DWEnums.CatchUpSyncOption)catchUpSetting.SelectedValue;
+            DWEnums.CatchUpSyncOption catchUpLocal = (CatchUpSyncOption)Enum.Parse(typeof(CatchUpSyncOption),catchUpSetting.SelectedValue.ToString());
 
             if (catchUpLocal != null && catchUpLocal != DWEnums.CatchUpSyncOption.Default)
             {
