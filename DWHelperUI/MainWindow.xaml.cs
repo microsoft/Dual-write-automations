@@ -69,7 +69,7 @@ namespace DWHelperUI
                 settingsVisibility = Visibility.Visible;
 
             }
-
+            newConfigSection.Visibility = settingsVisibility;
             adowikiuploadpanel.Visibility = settingsVisibility;
             applySolutionPanel.Visibility = settingsVisibility;
             runSettings.Visibility = settingsVisibility;

@@ -49,19 +49,19 @@ namespace DWLibary.Engines
             while (ret == null || !ret.Any())
             {
                 currentRetry++;
-
+                    
                 if (currentRetry > 1)
                 {
                     logger.LogInformation("Could not retrieve maps, retrying in some time...");
 
-                    Thread.Sleep(10000 * currentRetry);
+                    Thread.Sleep(5000 * currentRetry);
                 }
 
                 try
                 {
 
                     logger.LogDebug("Try to get list of maps...");
-                    HttpClient client = new HttpClient();
+                    HttpClient client = new HttpClientWithRetry();
                     DWHttp dW = new DWHttp(env);
 
                     HttpRequestMessage req = dW.buildDefaultHttpRequestGet();
@@ -93,7 +93,9 @@ namespace DWLibary.Engines
                 }
                 catch (Exception ex)
                 {
-                    GlobalVar.addError(ex.ToString());
+                    //No need to add to global error. 
+                    logger.LogError("RETRYING, error:" + ex.ToString());
+                    //GlobalVar.addError(ex.ToString());
                 }
 
                 if(retryCount == currentRetry)
@@ -210,7 +212,7 @@ namespace DWLibary.Engines
             List<Solution> ret = new List<Solution>();
 
             logger.LogInformation($"Retrieving Solutions");
-            HttpClient client = new HttpClient();
+            HttpClient client = new HttpClientWithRetry();
             DWHttp dW = new DWHttp(env);
 
          
@@ -253,41 +255,83 @@ namespace DWLibary.Engines
 
         public async Task getFieldMappingForMaps(DWMap currentMap, string prefix = "")
         {
+
+            //Adding retry:
+
+            int retryCount = 5;
+            int currentRetry = 0;
             curFieldMapping = new DWFieldMapping();
-            try
+
+            while (curFieldMapping.id == String.Empty)
             {
-                logger.LogInformation($"{prefix} - Retrieving field mappings");
-                HttpClient client = new HttpClient();
-                DWHttp dW = new DWHttp(env);
+                currentRetry++;
 
-                HttpRequestMessage req = dW.buildDefaultHttpRequestGet();
+                if (currentRetry > 1)
+                {
+                    logger.LogInformation("Could not retrieve field mapping, retrying in some time...");
 
-                UriBuilder uriBuilder = new UriBuilder(req.RequestUri);
-                uriBuilder.Path += $"{currentMap.detail.pid}/FieldMappings";
-                req.RequestUri = uriBuilder.Uri;
-
-                //Debug Logging >>
-                logger.LogDebug($"Request URI: {req.RequestUri}");
-                //Debug Logging <<
-
-                var responseStr = await client.SendAsync(req);
-
-                string content = await responseStr.Content.ReadAsStringAsync();
-
-                //Debug Logging >>
-                logger.LogDebug($"Response: {responseStr} {content}");
-                //Debug Logging <<
-
-
-                curFieldMapping = JsonConvert.DeserializeObject<DWFieldMapping>(content);
+                    Thread.Sleep(10000 * currentRetry);
+                }
 
 
 
+
+                try
+                {
+                    logger.LogInformation($"{prefix} - Retrieving field mappings");
+                    HttpClient client = new HttpClientWithRetry();
+                    DWHttp dW = new DWHttp(env);
+
+                    HttpRequestMessage req = dW.buildDefaultHttpRequestGet();
+
+                    UriBuilder uriBuilder = new UriBuilder(req.RequestUri);
+                    uriBuilder.Path += $"{currentMap.detail.pid}/FieldMappings";
+                    req.RequestUri = uriBuilder.Uri;
+
+                    //Debug Logging >>
+                    logger.LogDebug($"Request URI: {req.RequestUri}");
+                    //Debug Logging <<
+
+                    var responseStr = await client.SendAsync(req);
+
+                    string content = await responseStr.Content.ReadAsStringAsync();
+
+                    //Debug Logging >>
+                    logger.LogDebug($"Response: {responseStr} {content}");
+                    //Debug Logging <<
+
+
+                    curFieldMapping = JsonConvert.DeserializeObject<DWFieldMapping>(content);
+
+
+
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError("RETRYING, error:" + ex.ToString());
+                }
+
+                if (retryCount == currentRetry)
+                {
+
+                    if (curFieldMapping.id == String.Empty)
+                    {
+
+                        //re authenticate
+                        logger.LogInformation("Get refresh token");
+                        TokenRefresh refresh = new TokenRefresh(logger);
+                        await refresh.getRefreshToken();
+
+
+                        GlobalVar.addError("Could not get field map details after 5 retries");
+                        //logger.LogError("Could not get map details");
+                    }
+
+
+                }
             }
-            catch (Exception ex)
-            {
-                GlobalVar.addError(ex.ToString());
-            }
+
+
         }
 
         public async Task getConnectionSet(bool force = false)
@@ -296,39 +340,74 @@ namespace DWLibary.Engines
             if (connectionSet.id != null && connectionSet.id != String.Empty && !force)
                 return;
 
-            logger.LogInformation($"Get Connection set");
-            try
+
+            int retryCount = 5;
+            int currentRetry = 0;
+
+            while (connectionSet.id == null || connectionSet.id == String.Empty)
             {
-                HttpClient client = new HttpClient();
-                DWHttp dW = new DWHttp(env);
+                currentRetry++;
 
-                HttpRequestMessage req = dW.buildDefaultHttpRequestGet();
+                if (currentRetry > 1)
+                {
+                    logger.LogInformation("Could not retrieve field mapping, retrying in some time...");
 
-                UriBuilder uriBuilder = new UriBuilder(req.RequestUri.Scheme + "://" + req.RequestUri.Host);
-                uriBuilder.Path += $"api/ConnectionSet/{env.cname}";
+                    Thread.Sleep(5000 * currentRetry);
+                }
 
-                req.RequestUri = uriBuilder.Uri;
+                logger.LogInformation($"Get Connection set");
+                try
+                {
+                    HttpClient client = new HttpClientWithRetry();
+                    DWHttp dW = new DWHttp(env);
 
-                //Debug Logging >>
-                logger.LogDebug($"Request URI: {req.RequestUri}");
-                //Debug Logging <<
+                    HttpRequestMessage req = dW.buildDefaultHttpRequestGet();
 
-                var responseStr = await client.SendAsync(req);
+                    UriBuilder uriBuilder = new UriBuilder(req.RequestUri.Scheme + "://" + req.RequestUri.Host);
+                    uriBuilder.Path += $"api/ConnectionSet/{env.cname}";
 
-                string content = await responseStr.Content.ReadAsStringAsync();
+                    req.RequestUri = uriBuilder.Uri;
 
-                //Debug Logging >>
-                logger.LogDebug($"Response: {responseStr} {content}");
-                //Debug Logging <<
+                    //Debug Logging >>
+                    logger.LogDebug($"Request URI: {req.RequestUri}");
+                    //Debug Logging <<
 
-                connectionSet = JsonConvert.DeserializeObject<DWConnectionSet>(content);
+                    var responseStr = await client.SendAsync(req);
+
+                    string content = await responseStr.Content.ReadAsStringAsync();
+
+                    //Debug Logging >>
+                    logger.LogDebug($"Response: {responseStr} {content}");
+                    //Debug Logging <<
+
+                    connectionSet = JsonConvert.DeserializeObject<DWConnectionSet>(content);
 
 
 
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex.ToString());
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError("RETRYING, error:" + ex.ToString());
+                }
+
+                if (retryCount == currentRetry)
+                {
+
+                    if (connectionSet.id == null || connectionSet.id == String.Empty)
+                    {
+
+                        //re authenticate
+                        logger.LogInformation("Get refresh token");
+                        TokenRefresh refresh = new TokenRefresh(logger);
+                        await refresh.getRefreshToken();
+
+
+                        GlobalVar.addError("Could not get connectionSet after 5 retries");
+                        //logger.LogError("Could not get map details");
+                    }
+
+
+                }
             }
         }
 

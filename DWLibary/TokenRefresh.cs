@@ -128,7 +128,7 @@ namespace DWLibary
 
             LoginData ret = null;
 
-            HttpClient client = new HttpClient();
+            HttpClient client = new HttpClientWithRetry();
             HttpRequestMessage req = new HttpRequestMessage();
 
             req.Method = HttpMethod.Post;

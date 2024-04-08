@@ -432,6 +432,8 @@ namespace DWLibary.Engines
 
         private async Task initMapsFromMapConfig()
         {
+
+            bool anythingProcessed = false;
             foreach (MapConfig mapConfig in mapConfigs)
             {
                 currentMapConfig = mapConfig;
@@ -440,6 +442,8 @@ namespace DWLibary.Engines
 
                 await checkAddInitMaps();
 
+                //anythingProcessed = true;
+
             }
 
 
@@ -447,9 +451,11 @@ namespace DWLibary.Engines
             if (initThreads.Any())
             {
                 executeThreads(initThreads);
+                anythingProcessed = true;
             }
 
-            dwMaps = await common.getDWMaps();
+            if(anythingProcessed)
+             dwMaps = await common.getDWMaps();
 
         }
 
@@ -1367,7 +1373,7 @@ namespace DWLibary.Engines
 
                 if(common.curFieldMapping.name != null && common.curFieldMapping.name != String.Empty)
                 {
-                    HttpClient client = new HttpClient();
+                    HttpClient client = new HttpClientWithRetry();
                     DWHttp dW = new DWHttp();
 
                     HttpRequestMessage req = dW.buildDefaultHttpRequestPost();
@@ -1428,7 +1434,7 @@ namespace DWLibary.Engines
             {
                 logger.LogInformation($"{prefix}: Applying integrationkeys {JsonConvert.SerializeObject(currentMapConfig.keys)}");
 
-                HttpClient client = new HttpClient();
+                HttpClient client = new HttpClientWithRetry();
                 DWHttp dW = new DWHttp();
 
                 HttpRequestMessage req = dW.buildDefaultHttpRequestPost();
@@ -1482,7 +1488,7 @@ namespace DWLibary.Engines
             {
                 
 
-                HttpClient client = new HttpClient();
+                HttpClient client = new HttpClientWithRetry();
                 DWHttp dW = new DWHttp();
 
                 HttpRequestMessage req = dW.buildDefaultHttpRequestPost();
@@ -1534,7 +1540,7 @@ namespace DWLibary.Engines
             logger.LogInformation($"{prefix}: Get Inital sync details");
             try
             {
-                HttpClient client = new HttpClient();
+                HttpClient client = new HttpClientWithRetry();
                 DWHttp dW = new DWHttp();
 
                 HttpRequestMessage req = dW.buildDefaultHttpRequestGet();
@@ -1634,7 +1640,7 @@ namespace DWLibary.Engines
 
         private async Task startStopMap(DWEnums.StartStop _startStop, bool _skipInitalSync = true, bool _resumePause = false)
         {
-            HttpClient client = new HttpClient();
+            HttpClient client = new HttpClientWithRetry();
             client.Timeout = new TimeSpan(0,0,180);
             DWHttp dW = new DWHttp();
 
@@ -1794,7 +1800,7 @@ namespace DWLibary.Engines
 
             try
             {
-                HttpClient client = new HttpClient();
+                HttpClient client = new HttpClientWithRetry();
                 DWHttp dW = new DWHttp();
 
                 HttpRequestMessage req = dW.buildDefaultHttpRequestGet();
@@ -1882,7 +1888,7 @@ namespace DWLibary.Engines
 
 
                 logger.LogInformation($"{prefix}: Applying map version {applyTemplate.id} - {applyTemplate.version.major}.{applyTemplate.version.minor}.{applyTemplate.version.build}.{applyTemplate.version.revision}");
-                HttpClient client = new HttpClient();
+                HttpClient client = new HttpClientWithRetry();
                 DWHttp dW = new DWHttp();
 
                 HttpRequestMessage req = dW.buildDefaultHttpRequestPost();
@@ -2005,7 +2011,7 @@ namespace DWLibary.Engines
         //    List<DWMap> ret = new List<DWMap>();
         //    try
         //    {
-        //        HttpClient client = new HttpClient();
+        //        HttpClient client = new HttpClientWithRetry();
         //        DWHttp dW = new DWHttp();
 
         //        HttpRequestMessage req = dW.buildDefaultHttpRequestGet();
