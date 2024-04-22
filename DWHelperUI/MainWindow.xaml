@@ -1,14 +1,4 @@
-﻿<!--<Window
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:props="clr-namespace:DWHelperUI.Properties"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:xaml="clr-namespace:DWHelperUI"
-        xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:System="clr-namespace:System;assembly=System.Runtime" xmlns:DWLibary="clr-namespace:DWLibary;assembly=DWLibary"
-   RenderOptions.BitmapScalingMode="NearestNeighbor"
-        mc:Ignorable="av" x:Name="Dual_write_helper_UI" x:Class="DWHelperUI.MainWindow"
-        Width="1150" Height="850" MinWidth="1150" MinHeight="790" WindowStyle="SingleBorderWindow"
-        WindowStartupLocation="CenterScreen" Background="Transparent">-->
-<ui:FluentWindow
+﻿<ui:FluentWindow
     x:Class="DWHelperUI.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

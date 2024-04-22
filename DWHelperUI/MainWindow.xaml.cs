@@ -240,7 +240,7 @@ namespace DWHelperUI
             if (catchUpLocal != null && catchUpLocal != DWEnums.CatchUpSyncOption.Default)
             {
                 ret.Add("--catchupsetting");
-                ret.Add($"\"{localMode.ToString()}\"");
+                ret.Add($"\"{catchUpLocal.ToString()}\"");
             }
 
             if (localMode == DWEnums.RunMode.compare)
@@ -598,6 +598,7 @@ namespace DWHelperUI
         //{
         //    this.Close();
         //}
+
 
         private void showLogs_Click(object sender, RoutedEventArgs e)
         {

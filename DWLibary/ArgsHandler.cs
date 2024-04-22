@@ -53,6 +53,11 @@ namespace DWLibary
 
            })
            .WithNotParsed<Options>(e => {
+
+               foreach (var o in e)
+               {
+                   Console.WriteLine("Not parsed parameter" + o.ToString());
+               }
                // parsing unsuccessful; deal with parsing errors
                throw new Exception("Commandline parameters wrong");
 
