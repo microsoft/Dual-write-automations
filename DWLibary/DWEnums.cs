@@ -30,6 +30,16 @@ namespace DWLibary
             init = 8
         };
 
+        public enum CatchUpSyncOption
+        {
+            [Description("Catch up synchronization of queued records")]
+            Default,
+            [Description("Skip to live synchronization preserving queued records to catch-up errors for retry")]
+            BackendQueueProcessing,
+            [Description("Skip to live synchronization and discard queued records")]
+            DeleteQueueProcessing
+        }
+
         public enum MapStatus
         {
             None = 0,

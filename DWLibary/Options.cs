@@ -43,6 +43,9 @@ namespace DWLibary
         [Option("runmode", Default = DWEnums.RunMode.none, HelpText = "Overwrites the runmode in the config file, possible: deployment, deployInitialSync, start, stop, pause, export")]
         public DWEnums.RunMode runmode { get; set; }
 
+        [Option("catchupsetting", Default = DWEnums.CatchUpSyncOption.Default, HelpText = "Defines how CatchUps are handles after pausing!")]
+        public DWEnums.CatchUpSyncOption catchupsetting { get; set; }
+
         [Option("mfasecret", Default = "", HelpText = "Overwrites the mfasecret in the config file, usable in deployment pipelines when the secret is storerd in a key vault")]
         public string mfasecret { get; set; }
 

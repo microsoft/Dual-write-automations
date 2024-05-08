@@ -21,7 +21,7 @@ namespace DWLibary
             DWEnvironment environment = new DWEnvironment();
             try
             {
-                HttpClient client = new HttpClient();
+                HttpClient client = new HttpClientWithRetry();
                 DWHttp dW = new DWHttp();
                 HttpRequestMessage req = dW.buildDefaultHttpRequestGet();
 

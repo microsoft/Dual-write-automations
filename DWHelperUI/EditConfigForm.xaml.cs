@@ -22,13 +22,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace DWHelperUI
 {
     /// <summary>
     /// Interaction logic for EditConfigForm.xaml
     /// </summary>
-    public partial class EditConfigForm : Window
+    public partial class EditConfigForm
     {
         public string configName { get; set; }
         ObservableCollection<MapConfig> mapConfigsContent;
@@ -68,6 +69,9 @@ namespace DWHelperUI
 
             setVisibility<KeyValueConfigurationElement>(appSettings);
 
+
+
+
             appSettings.ItemsSource = gridContent;
 
         }
@@ -100,7 +104,17 @@ namespace DWHelperUI
 
             foreach (var prop in properties)
             {
-                var column = new DataGridTextColumn();
+                dynamic column = new DataGridTextColumn();
+
+
+
+                if (prop.Name == "executionMode")
+                {
+                    column = new DataGridTextColumn();
+                }
+
+
+
                 column.Binding = new Binding(prop.Name);
                 column.Header = prop.Name;
 

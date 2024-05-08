@@ -48,7 +48,7 @@ namespace DWLibary.Engines
             logger.LogInformation($"Reset Link");
             try
             {
-                HttpClient client = new HttpClient();
+                HttpClient client = new HttpClientWithRetry();
                 client.Timeout = new TimeSpan(0,0,300);
                 DWHttp dW = new DWHttp(env);
 

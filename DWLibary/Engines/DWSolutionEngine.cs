@@ -50,7 +50,7 @@ namespace DWLibary.Engines
 
             try
             {
-                HttpClient client = new HttpClient();
+                HttpClient client = new HttpClientWithRetry();
                 DWHttp dW = new DWHttp();
 
                 HttpRequestMessage req = dW.buildDefaultHttpRequestGet();
@@ -109,7 +109,7 @@ namespace DWLibary.Engines
                 logger.LogInformation($"Applying solution {solutionReq.solutions[0].criteria.uniquename}");
 
 
-                HttpClient client = new HttpClient();
+                HttpClient client = new HttpClientWithRetry();
                 DWHttp dW = new DWHttp();
 
                 HttpRequestMessage req = dW.buildDefaultHttpRequestPost();
