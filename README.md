@@ -29,7 +29,8 @@ This is what it can do:
 -	Export configurations in the correct order 
 -	Run initial sync 
 -	Parallel deployment to multiple target environments only using command line or multiple instances of the UI
--	Compare two environments and show differences 
+-	Compare two environments and show differences
+-	Reset link (Using currently configured legal entities and relinks with them) 
 
 Generally the tool has a UI and a Console application execution. Ultimately the UI will call the console application with arguments. 
 This makes it possible to also run any of what you are running in the UI also in an Azure pipeline. 
