@@ -54,9 +54,16 @@ namespace DWLibary
            })
            .WithNotParsed<Options>(e => {
 
-               foreach (var o in e)
+               foreach (var error in e)
                {
-                   Console.WriteLine("Not parsed parameter" + o.ToString());
+                   if (error is NamedError namedError)
+                   {
+                       Console.WriteLine($"Failed to parse parameter: {namedError.NameInfo.NameText}");
+                   }
+                   else
+                   {
+                       Console.WriteLine(error.ToString());
+                   }
                }
                // parsing unsuccessful; deal with parsing errors
                throw new Exception("Commandline parameters wrong");

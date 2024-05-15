@@ -49,7 +49,7 @@
             </Button>-->
 
         <ui:TitleBar Grid.ColumnSpan="4" FontWeight="Bold" FontSize="16"
-Title="Dual-write helper UI"
+Title="Dual-write helper UI" Icon="LogoFinal.ico"
 Grid.Row="0"/>
         <TextBlock Grid.Row="2" Grid.ColumnSpan="3" Text="Authentication" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20 0 0 2" FontSize="14" FontWeight="SemiBold" />
         <Separator Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Height="0.7" Margin="150 20 20 20" Background="#E1E6EB"/>
