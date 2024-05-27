@@ -262,7 +262,7 @@ namespace DWLibary.Engines
             int currentRetry = 0;
             curFieldMapping = new DWFieldMapping();
 
-            while (curFieldMapping.id == String.Empty)
+            while (curFieldMapping.id == String.Empty || curFieldMapping.id == null)
             {
                 currentRetry++;
 
