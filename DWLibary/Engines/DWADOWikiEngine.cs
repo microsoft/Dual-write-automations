@@ -133,7 +133,7 @@ namespace DWLibary.Engines
 
         public string EscapeSpecialCharacters(string input)
         {
-            var specialCharacters = new char[] { '#', '*', '_', '{', '}', '[', ']', '(', ')', '>', '#', '+', '-', '.', '!', '\\' };
+            var specialCharacters = new char[] { '|' };
             foreach (var character in specialCharacters)
             {
                 input = input.Replace(character.ToString(), "\\" + character);
