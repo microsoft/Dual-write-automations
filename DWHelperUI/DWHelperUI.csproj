@@ -6,10 +6,22 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>LogoFinal.ico</ApplicationIcon>
     <!--<PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>-->
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="LogoFinal.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="LogoFinal.ico" />
+    <Content Include="LogoFinal.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

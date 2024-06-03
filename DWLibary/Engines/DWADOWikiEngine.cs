@@ -129,6 +129,19 @@ namespace DWLibary.Engines
 
         }
 
+
+
+        public string EscapeSpecialCharacters(string input)
+        {
+            var specialCharacters = new char[] { '|' };
+            foreach (var character in specialCharacters)
+            {
+                input = input.Replace(character.ToString(), "\\" + character);
+            }
+            return input;
+        }
+
+        //wrap into a try / catch statement to catch any exceptions
         private async Task createIndividualPageUpload()
         {
             string pageName = $"{currentMap.leftEntity.displayName} - {currentMap.rightEntity.displayName} - CURRENT";
@@ -136,6 +149,10 @@ namespace DWLibary.Engines
             string content = String.Empty;
 
             await common.getFieldMappingForMaps(currentMap, curMapConfig.mapName);
+
+            ////check if common record has been retrieved properly 
+            //if (common.curFieldMapping is null)
+            //    return;
 
             //headers
             content += $"## Map details {Environment.NewLine}{Environment.NewLine}";
@@ -146,15 +163,15 @@ namespace DWLibary.Engines
             string versionStr = $"{currentMap.detail.template.version.major}.{currentMap.detail.template.version.minor}.{currentMap.detail.template.version.build}.{currentMap.detail.template.version.revision}";
 
 
-            content += $"| **FO Entity** | {getFOEntity()} | {Environment.NewLine}";
-            content += $"| **CE Table** | {getCEEntity()} | {Environment.NewLine}";
+            content += $"| **FO Entity** | {EscapeSpecialCharacters(getFOEntity())} | {Environment.NewLine}";
+            content += $"| **CE Table** | {EscapeSpecialCharacters(getCEEntity())} | {Environment.NewLine}";
             content += $"| **Version** | {versionStr} | {Environment.NewLine}";
-            content += $"| **Publisher** | {currentMap.detail.template.author}{Environment.NewLine}";
-            content += $"| **Description** |{currentMap.detail.template.description} | {Environment.NewLine}";
+            content += $"| **Publisher** | {EscapeSpecialCharacters(currentMap.detail.template.author)}{Environment.NewLine}";
+            content += $"| **Description** |{EscapeSpecialCharacters(currentMap.detail.template.description)} | {Environment.NewLine}";
             content += $"| **Direction** | {DWEnums.DescriptionAttr<DWEnums.DWSyncDirection>(getSyncDirection())} {Environment.NewLine}";
             content += $" **Integration key** | {await common.getCurrentKeys(currentMap)}{Environment.NewLine}";
-            content += $"| **FO Filter** | {common.getSourceFilter()} |{Environment.NewLine}";
-            content += $"| **CE Filter** | {common.getDestinationFilter()} |{Environment.NewLine}";
+            content += $"| **FO Filter** | {EscapeSpecialCharacters(common.getSourceFilter())} |{Environment.NewLine}";
+            content += $"| **CE Filter** | {EscapeSpecialCharacters(common.getDestinationFilter())} |{Environment.NewLine}";
 
             content += $"{Environment.NewLine}";
 
