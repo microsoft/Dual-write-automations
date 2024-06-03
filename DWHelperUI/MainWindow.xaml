@@ -8,6 +8,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="DW Helper UI"
     Width="1100"
+  
     xmlns:xaml="clr-namespace:DWHelperUI"
         xmlns:props="clr-namespace:DWHelperUI.Properties" xmlns:System="clr-namespace:System;assembly=System.Runtime"
     Height="900"
@@ -47,10 +48,24 @@
         <!--<Button Click="Close_Click" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="20" Grid.Column="3" Margin="0,0,10,10">
                 <Path Data="M 0 0 L 10 10 M 0 10 L 10 0" Stroke="Black" StrokeThickness="2"></Path>
             </Button>-->
-
         <ui:TitleBar Grid.ColumnSpan="4" FontWeight="Bold" FontSize="16"
 Title="Dual-write helper UI" Icon="LogoFinal.ico"
 Grid.Row="0"/>
+
+        <Viewbox Grid.Row="0" Grid.Column="2" Grid.RowSpan="10" VerticalAlignment="Top" Margin="20">
+            <Border Width="100" Height="100" BorderBrush="DimGray" BorderThickness="0.5" CornerRadius="100" Opacity="0.2" VerticalAlignment="Top">
+                <Border.Background>
+                    <ImageBrush ImageSource="LogoFinal.png"/>
+                </Border.Background>
+            </Border>
+        </Viewbox>
+        <!--<Border BorderBrush="Black" BorderThickness="2" CornerRadius="180" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3">
+            <Border.Background>
+                <ImageBrush ImageSource="LogoFinal.png"/>
+            </Border.Background>
+        </Border>-->
+
+
         <TextBlock Grid.Row="2" Grid.ColumnSpan="3" Text="Authentication" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20 0 0 2" FontSize="14" FontWeight="SemiBold" />
         <Separator Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Height="0.7" Margin="150 20 20 20" Background="#E1E6EB"/>
 
@@ -111,12 +126,15 @@ Grid.Row="0"/>
         <ListBox x:Name="envList" Grid.Row="3" Grid.RowSpan="2" Grid.Column="2" ItemsSource="{Binding envList, Source={x:Static props:Settings.Default}}" Margin="20" MouseDoubleClick="envList_MouseDoubleClick"/>
         <!--<DataGrid x:Name="dataGrid" Grid.Row="3" Grid.RowSpan="5" Margin="20" Grid.Column="2" av:ItemsSource="{av:SampleData ItemCount=5}"/>-->
         <StackPanel Orientation="Vertical" Grid.Row="7" Grid.Column="2" Margin="20,10" Name="actions">
+            
             <TextBlock Text="Actions" HorizontalAlignment="Left" VerticalAlignment="Center"  FontSize="14" FontWeight="SemiBold" />
             <StackPanel Orientation="Horizontal">
             <Button Name="showLastLog" Content="Open last logfile"  MinWidth="100"  HorizontalAlignment="Left" Margin="5" Click="showLastLog_Click"></Button>
             <Button Name="showLogs" Content="Show log folder"  MinWidth="100" HorizontalAlignment="Left" Margin="5" Click="showLogs_Click"></Button>
             </StackPanel>
+
             
+
         </StackPanel>
 
 

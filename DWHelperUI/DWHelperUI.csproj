@@ -13,7 +13,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="LogoFinal.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="LogoFinal.ico" />
+    <Content Include="LogoFinal.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
