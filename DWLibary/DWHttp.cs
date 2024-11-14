@@ -16,6 +16,7 @@ namespace DWLibary
         HttpRequestMessage _httpRequest;
         DWEnvironment env;
 
+        private const string CustomUserAgent = "DualWriteHelper/1.0 (Windows NT 10.0; Win64; x64)";
 
         public DWHttp(DWEnvironment _env = default)
         {
@@ -31,6 +32,7 @@ namespace DWLibary
             _httpRequest.Method = HttpMethod.Post;
             _httpRequest.Headers.Add("Accept", "application/json");
             _httpRequest.Headers.Add("Origin", GlobalVar.dataintegratorURL.AbsoluteUri);
+            _httpRequest.Headers.Add("User-Agent", CustomUserAgent);
 
             _httpRequest.RequestUri = buildReqUri();
             buildAuth();

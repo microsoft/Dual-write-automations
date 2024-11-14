@@ -43,10 +43,50 @@ namespace DWHelperUI
         public MainWindow()
         {
             InitializeComponent();
+            checkUpgrade();
+            checkCreateEncryption();
             initConfigFiles();
             initEnums();
             initFormSettings();
             outputQueue = new ConcurrentQueue<string>();
+        }
+
+        private void checkUpgrade()
+        {
+            if (Properties.Settings.Default.upgradeRequired)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.upgradeRequired = false;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        //Used to decrypt the password properly when the password is bound to the passwordbox
+        private void checkCreateEncryption()
+        {
+
+            if(string.IsNullOrWhiteSpace(Properties.Settings.Default.EncryptionKey) 
+                ||  string.IsNullOrWhiteSpace(Properties.Settings.Default.EncryptionIv))
+            {
+
+                List<string> keyIv = EncryptionKeyGenerator.GenerateAndStoreKeys();
+
+                Properties.Settings.Default.EncryptionKey = keyIv[0];
+                Properties.Settings.Default.EncryptionIv = keyIv[1];
+                Properties.Settings.Default.Save();
+
+
+            }
+
+            EncryptionHelper helper = new EncryptionHelper(Properties.Settings.Default.EncryptionKey, Properties.Settings.Default.EncryptionIv);
+
+            //Decrypt for use
+            if(!string.IsNullOrWhiteSpace(password.Password))
+            {
+                password.Password = helper.Decrypt(Properties.Settings.Default.password);
+            }
+        
+
         }
 
         private void initFormSettings()
@@ -327,6 +367,12 @@ namespace DWHelperUI
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
+            //make sure PW is encrpyted 
+            EncryptionHelper helper = new EncryptionHelper(Properties.Settings.Default.EncryptionKey, Properties.Settings.Default.EncryptionIv);
+
+
+            Properties.Settings.Default.password = helper.Encrypt(password.Password);
+
             Properties.Settings.Default.exportOption = exportOption.SelectedValue.ToString();
             Properties.Settings.Default.runmode = runMode.SelectedValue.ToString();
             Properties.Settings.Default.Save();
