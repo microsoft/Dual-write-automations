@@ -100,6 +100,7 @@ CreateHostBuilderv2(args, level).Build().Run();
 
 static IHostBuilder CreateHostBuilderv2(string[] args, LogLevel _logLevel) =>
     Host.CreateDefaultBuilder(args).ConfigureLogging((hostingContext, builder) => {
+        builder.ClearProviders();
         string subFolder = "Logs";
         string fileName = $"-{DateTime.Now.ToString("yyyy-MM-dd")}_{GlobalVar.foEnv}-{new Random().Next(1, 99999999)}.txt";
 
@@ -130,6 +131,7 @@ static IHostBuilder CreateHostBuilderv2(string[] args, LogLevel _logLevel) =>
                 configureApplicationInsightsLoggerOptions: (options) => { }
                 );
         }
+        builder.AddConsole(); // Add console logging
     })
         .ConfigureServices((_, services) =>
             services.AddHostedService<DWHostedService>());

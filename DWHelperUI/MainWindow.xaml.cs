@@ -3,6 +3,7 @@
 
 using CommandLine;
 using DWLibary;
+using DWLibary.Struct;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
@@ -12,7 +13,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,7 +30,11 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Wpf.Ui.Appearance;
+using MessageBox = Wpf.Ui.Controls.MessageBox;
 using static DWLibary.DWEnums;
+using Version = System.Version;
+using Microsoft.TeamFoundation.Test.WebApi;
+using static OpenQA.Selenium.BiDi.Modules.BrowsingContext.ClipRectangle;
 
 namespace DWHelperUI
 {
@@ -43,10 +51,120 @@ namespace DWHelperUI
         public MainWindow()
         {
             InitializeComponent();
+            checkUpgrade();
+            checkCreateEncryption();
             initConfigFiles();
             initEnums();
             initFormSettings();
             outputQueue = new ConcurrentQueue<string>();
+            // Check for updates
+            //CheckForUpdatesAsync();
+        }
+
+        private void checkUpgrade()
+        {
+            if (Properties.Settings.Default.upgradeRequired)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.upgradeRequired = false;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        //Used to decrypt the password properly when the password is bound to the passwordbox
+        private void checkCreateEncryption()
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(Properties.Settings.Default.EncryptionKey)
+                    || string.IsNullOrWhiteSpace(Properties.Settings.Default.EncryptionIv))
+                {
+
+                    List<string> keyIv = EncryptionKeyGenerator.GenerateAndStoreKeys();
+
+                    Properties.Settings.Default.EncryptionKey = keyIv[0];
+                    Properties.Settings.Default.EncryptionIv = keyIv[1];
+                    Properties.Settings.Default.Save();
+
+
+                }
+
+                EncryptionHelper helper = new EncryptionHelper(Properties.Settings.Default.EncryptionKey, Properties.Settings.Default.EncryptionIv);
+
+                //Decrypt for use
+                if (!string.IsNullOrWhiteSpace(password.Password))
+                {
+                    password.Password = helper.Decrypt(Properties.Settings.Default.password);
+                }
+            }
+            catch //Make sure it wont fail
+            {
+
+            }
+
+
+        }
+
+
+        private string GetCurrentVersion()
+        {
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            //return "1.0.7.0";
+            return version != null ? version.ToString() : "1.0.0";
+        }
+
+        private void OnWindowLoaded(object sender, RoutedEventArgs e)
+        {
+            // Your code to execute when the window is loaded
+            CheckForUpdatesAsync();
+        }
+
+        private void CheckForUpdatesAsync()
+        {
+            string currentVersion = GetCurrentVersion(); // Get the current version from the assembly
+            string repoOwner = "microsoft"; // Replace with the repository owner
+            string repoName = "Dual-write-automations"; // Replace with the repository name
+
+            try
+            {
+
+                using (HttpClient client = new HttpClient())
+                {
+                    try
+                    {
+                        client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("DWHelperUI", currentVersion));
+                        string url = $"https://api.github.com/repos/{repoOwner}/{repoName}/releases/latest";
+                        HttpResponseMessage response = client.GetAsync(url).Result;
+                        response.EnsureSuccessStatusCode();
+                        string responseBody = response.Content.ReadAsStringAsync().Result;
+                        dynamic release = JObject.Parse(responseBody);
+                        string latestVersion = Regex.Replace(Convert.ToString(release.tag_name), @"[^0-9.]", "");
+
+                        if (new Version(latestVersion) > new Version(currentVersion))
+                        {
+                            MessageBox box = new MessageBox();
+                            box.Owner = App.Current.MainWindow;
+                            box.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            box.Title = "Update Available";
+                            box.Content = $"A new version ({latestVersion}) is available. Please update your application.";
+                            box.PrimaryButtonText = "OK";
+                            box.ShowDialogAsync().Wait();
+                        }
+
+
+
+                    }
+                    catch (HttpRequestException e)
+                    {
+                        Console.WriteLine($"Request error: {e.Message}");
+                    }
+                }
+            
+            }
+            catch (Exception ex)
+            {
+              
+            }
         }
 
         private void initFormSettings()
@@ -327,6 +445,12 @@ namespace DWHelperUI
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
+            //make sure PW is encrpyted 
+            EncryptionHelper helper = new EncryptionHelper(Properties.Settings.Default.EncryptionKey, Properties.Settings.Default.EncryptionIv);
+
+
+            Properties.Settings.Default.password = helper.Encrypt(password.Password);
+
             Properties.Settings.Default.exportOption = exportOption.SelectedValue.ToString();
             Properties.Settings.Default.runmode = runMode.SelectedValue.ToString();
             Properties.Settings.Default.Save();
@@ -336,16 +460,26 @@ namespace DWHelperUI
         private void validateUri()
         {
             string ret = String.Empty;
-           
+
+
+            MessageBox box = new MessageBox();
+            box.Owner = App.Current.MainWindow;
+            box.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            box.Content = "URL is not valid";
+            box.PrimaryButtonText = "OK";
             try
             {
+
+                
+                
+
                 if (envURL.Text == String.Empty)
                     return;
 
                 UriBuilder builder = new UriBuilder(envURL.Text);
                 if (!builder.Uri.AbsoluteUri.ToUpper().Contains("DYNAMICS.COM"))
                 {
-                    MessageBox.Show("URL is not valid");
+                    box.ShowDialogAsync().Wait();
                     envURL.Text = String.Empty;
                     return;
                 }
@@ -356,7 +490,7 @@ namespace DWHelperUI
             }
             catch
             {
-                MessageBox.Show("URL is not valid");
+                box.ShowDialogAsync().Wait();
                 envURL.Text = String.Empty;
             }
 
@@ -611,7 +745,12 @@ namespace DWHelperUI
             }
             else
             {
-                MessageBox.Show("Logs folder does not exist in the current directory");
+                MessageBox box = new MessageBox();
+                box.Owner = App.Current.MainWindow;
+                box.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                box.Content = "Logs folder does not exist in the current directory";
+                box.PrimaryButtonText = "OK";
+                box.ShowDialogAsync().Wait();
             }
         }
 

@@ -221,7 +221,7 @@ namespace DWLibary
             if (maxThreads == 1)
                 executionMode = DWEnums.ExecutionMode.sequential;
 
-            readLoginTokens();
+            //readLoginTokens();  //Do not make this anymore, can keep it in memory but not on disk 
 
             if (savedTokens == null)
                 savedTokens = new List<LoginData>();
@@ -243,7 +243,7 @@ namespace DWLibary
                 }
             }
 
-            readGateways();
+            // readGateways();  //Do not make this anymore, can keep it in memory but not on disk 
             if (envGateways != null)
             {
                 EnvGatewayCombination lookup = envGateways.Where(x => x.environment.Equals(foEnv)).FirstOrDefault();
@@ -280,7 +280,7 @@ namespace DWLibary
             }
 
             envGateways.Add(comb);
-            writeGateways();
+            //writeGateways();  //Do not make this anymore, can keep it in memory but not on disk 
 
 
         }
@@ -303,11 +303,12 @@ namespace DWLibary
             loginData.environment = foEnv;
 
             savedTokens.Add(GlobalVar.loginData);
-            writeLoginTokens();
+            //writeLoginTokens();  //Do not make this anymore, can keep it in memory but not on disk 
 
 
         }
 
+        //Do not make this anymore, can keep it in memory but not on disk 
         public static void writeGateways()
         {
             try
@@ -325,7 +326,7 @@ namespace DWLibary
 
             }
         }
-
+        //Do not make this anymore, can keep it in memory but not on disk 
         public static void readGateways()
         {
             try
@@ -347,7 +348,7 @@ namespace DWLibary
 
             }
         }
-
+        //Do not make this anymore, can keep it in memory but not on disk 
         public static void writeLoginTokens()
         {
             try
@@ -365,7 +366,7 @@ namespace DWLibary
 
             }
         }
-
+        //Do not make this anymore, can keep it in memory but not on disk 
         public static void readLoginTokens()
         {
             try

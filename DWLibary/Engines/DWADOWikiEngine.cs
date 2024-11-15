@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using static Azure.Core.HttpHeader;
@@ -145,6 +146,11 @@ namespace DWLibary.Engines
         private async Task createIndividualPageUpload()
         {
             string pageName = $"{currentMap.leftEntity.displayName} - {currentMap.rightEntity.displayName} - CURRENT";
+
+            //Remove special characters on wiki page:
+            string pattern = @"[#<>%""\?:/\\\*\|]";
+            string replacement = "-";
+            pageName =  Regex.Replace(pageName, pattern, replacement);
 
             string content = String.Empty;
 
