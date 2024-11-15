@@ -30,8 +30,11 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Wpf.Ui.Appearance;
+using MessageBox = Wpf.Ui.Controls.MessageBox;
 using static DWLibary.DWEnums;
 using Version = System.Version;
+using Microsoft.TeamFoundation.Test.WebApi;
+using static OpenQA.Selenium.BiDi.Modules.BrowsingContext.ClipRectangle;
 
 namespace DWHelperUI
 {
@@ -55,7 +58,7 @@ namespace DWHelperUI
             initFormSettings();
             outputQueue = new ConcurrentQueue<string>();
             // Check for updates
-            CheckForUpdatesAsync();
+            //CheckForUpdatesAsync();
         }
 
         private void checkUpgrade()
@@ -100,7 +103,14 @@ namespace DWHelperUI
         private string GetCurrentVersion()
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version;
+            //return "1.0.7.0";
             return version != null ? version.ToString() : "1.0.0";
+        }
+
+        private void OnWindowLoaded(object sender, RoutedEventArgs e)
+        {
+            // Your code to execute when the window is loaded
+            CheckForUpdatesAsync();
         }
 
         private void CheckForUpdatesAsync()
@@ -126,7 +136,13 @@ namespace DWHelperUI
 
                         if (new Version(latestVersion) > new Version(currentVersion))
                         {
-                            MessageBox.Show($"A new version ({latestVersion}) is available. Please update your application.", "Update Available", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox box = new MessageBox();
+                            box.Owner = App.Current.MainWindow;
+                            box.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            box.Title = "Update Available";
+                            box.Content = $"A new version ({latestVersion}) is available. Please update your application.";
+                            box.PrimaryButtonText = "OK";
+                            box.ShowDialogAsync().Wait();
                         }
 
 
@@ -438,16 +454,26 @@ namespace DWHelperUI
         private void validateUri()
         {
             string ret = String.Empty;
-           
+
+
+            MessageBox box = new MessageBox();
+            box.Owner = App.Current.MainWindow;
+            box.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            box.Content = "URL is not valid";
+            box.PrimaryButtonText = "OK";
             try
             {
+
+                
+                
+
                 if (envURL.Text == String.Empty)
                     return;
 
                 UriBuilder builder = new UriBuilder(envURL.Text);
                 if (!builder.Uri.AbsoluteUri.ToUpper().Contains("DYNAMICS.COM"))
                 {
-                    MessageBox.Show("URL is not valid");
+                    box.ShowDialogAsync().Wait();
                     envURL.Text = String.Empty;
                     return;
                 }
@@ -458,7 +484,7 @@ namespace DWHelperUI
             }
             catch
             {
-                MessageBox.Show("URL is not valid");
+                box.ShowDialogAsync().Wait();
                 envURL.Text = String.Empty;
             }
 
@@ -713,7 +739,12 @@ namespace DWHelperUI
             }
             else
             {
-                MessageBox.Show("Logs folder does not exist in the current directory");
+                MessageBox box = new MessageBox();
+                box.Owner = App.Current.MainWindow;
+                box.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                box.Content = "Logs folder does not exist in the current directory";
+                box.PrimaryButtonText = "OK";
+                box.ShowDialogAsync().Wait();
             }
         }
 
