@@ -3,6 +3,7 @@
 
 using CommandLine;
 using DWLibary;
+using DWLibary.Struct;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
@@ -12,7 +13,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,6 +31,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Wpf.Ui.Appearance;
 using static DWLibary.DWEnums;
+using Version = System.Version;
 
 namespace DWHelperUI
 {
@@ -49,6 +54,8 @@ namespace DWHelperUI
             initEnums();
             initFormSettings();
             outputQueue = new ConcurrentQueue<string>();
+            // Check for updates
+            CheckForUpdatesAsync();
         }
 
         private void checkUpgrade()
@@ -87,6 +94,55 @@ namespace DWHelperUI
             }
         
 
+        }
+
+
+        private string GetCurrentVersion()
+        {
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            return version != null ? version.ToString() : "1.0.0";
+        }
+
+        private void CheckForUpdatesAsync()
+        {
+            string currentVersion = GetCurrentVersion(); // Get the current version from the assembly
+            string repoOwner = "microsoft"; // Replace with the repository owner
+            string repoName = "Dual-write-automations"; // Replace with the repository name
+
+            try
+            {
+
+                using (HttpClient client = new HttpClient())
+                {
+                    try
+                    {
+                        client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("DWHelperUI", currentVersion));
+                        string url = $"https://api.github.com/repos/{repoOwner}/{repoName}/releases/latest";
+                        HttpResponseMessage response = client.GetAsync(url).Result;
+                        response.EnsureSuccessStatusCode();
+                        string responseBody = response.Content.ReadAsStringAsync().Result;
+                        dynamic release = JObject.Parse(responseBody);
+                        string latestVersion = Regex.Replace(Convert.ToString(release.tag_name), @"[^0-9.]", "");
+
+                        if (new Version(latestVersion) > new Version(currentVersion))
+                        {
+                            MessageBox.Show($"A new version ({latestVersion}) is available. Please update your application.", "Update Available", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+
+
+
+                    }
+                    catch (HttpRequestException e)
+                    {
+                        Console.WriteLine($"Request error: {e.Message}");
+                    }
+                }
+            
+            }
+            catch (Exception ex)
+            {
+              
+            }
         }
 
         private void initFormSettings()
