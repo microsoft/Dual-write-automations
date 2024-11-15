@@ -74,28 +74,34 @@ namespace DWHelperUI
         //Used to decrypt the password properly when the password is bound to the passwordbox
         private void checkCreateEncryption()
         {
-
-            if(string.IsNullOrWhiteSpace(Properties.Settings.Default.EncryptionKey) 
-                ||  string.IsNullOrWhiteSpace(Properties.Settings.Default.EncryptionIv))
+            try
             {
+                if (string.IsNullOrWhiteSpace(Properties.Settings.Default.EncryptionKey)
+                    || string.IsNullOrWhiteSpace(Properties.Settings.Default.EncryptionIv))
+                {
 
-                List<string> keyIv = EncryptionKeyGenerator.GenerateAndStoreKeys();
+                    List<string> keyIv = EncryptionKeyGenerator.GenerateAndStoreKeys();
 
-                Properties.Settings.Default.EncryptionKey = keyIv[0];
-                Properties.Settings.Default.EncryptionIv = keyIv[1];
-                Properties.Settings.Default.Save();
+                    Properties.Settings.Default.EncryptionKey = keyIv[0];
+                    Properties.Settings.Default.EncryptionIv = keyIv[1];
+                    Properties.Settings.Default.Save();
 
+
+                }
+
+                EncryptionHelper helper = new EncryptionHelper(Properties.Settings.Default.EncryptionKey, Properties.Settings.Default.EncryptionIv);
+
+                //Decrypt for use
+                if (!string.IsNullOrWhiteSpace(password.Password))
+                {
+                    password.Password = helper.Decrypt(Properties.Settings.Default.password);
+                }
+            }
+            catch //Make sure it wont fail
+            {
 
             }
 
-            EncryptionHelper helper = new EncryptionHelper(Properties.Settings.Default.EncryptionKey, Properties.Settings.Default.EncryptionIv);
-
-            //Decrypt for use
-            if(!string.IsNullOrWhiteSpace(password.Password))
-            {
-                password.Password = helper.Decrypt(Properties.Settings.Default.password);
-            }
-        
 
         }
 
