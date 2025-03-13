@@ -51,7 +51,7 @@ if (File.Exists(@"DEBUGArgs.txt"))
             argsList.Add(value);
 
             if (value == "--runmode")
-                argsList.Add(DWEnums.RunMode.wikiUpload.ToString());
+                argsList.Add(DWEnums.RunMode.start.ToString());
 
             
 
