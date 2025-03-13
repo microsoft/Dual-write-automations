@@ -666,14 +666,71 @@ namespace DWLibary.Engines
                 && pauseResumeMaps.Any())
             {
                 await startStopMap(GlobalVar.runMode == DWEnums.RunMode.pause ? DWEnums.StartStop.pause : DWEnums.StartStop.resume, true, true);
-
+                //Here we check if the status of the maps is then in the target status, loop through it until completed
+                await checkPauseResumeCompleted();
             }
 
 
+
+
+            //Initial sync 
             if(GlobalVar.runMode == DWEnums.RunMode.deployInitialSync)
             {
                 await runInitialSetup();
             }
+
+        }
+
+        private async Task checkPauseResumeCompleted()
+        {
+           
+
+            bool hasUncompleteMap = true;
+            bool isCompleted = false;
+            //Loop through the resumed / pause maps.
+
+            while(!isCompleted)
+            {
+                hasUncompleteMap = false;
+
+                //get fresh set of DW Maps for status comparison
+                dwMaps = await common.getDWMaps();
+
+                foreach (DWMap map in pauseResumeMaps)
+                {
+                    currentMap = dwMaps.Where(x => x.detail.tName.Equals(map.detail.tName)).FirstOrDefault();
+
+                    if ((currentMap.detail.mapStatus == DWEnums.MapStatus.CatchUp || currentMap.detail.mapStatus == DWEnums.MapStatus.Paused)
+                        && GlobalVar.runMode == DWEnums.RunMode.start)
+                    {
+                        hasUncompleteMap = true;
+                        break;
+                    }
+
+                    if ((currentMap.detail.mapStatus != DWEnums.MapStatus.Paused)
+                        && GlobalVar.runMode == DWEnums.RunMode.pause)
+                    {
+                        hasUncompleteMap = true;
+                        break;
+                    }
+
+
+                }
+
+                //Wait 30 seconds 
+                if (hasUncompleteMap)
+                {
+                    logger.LogInformation("Waiting for catchup / pause to complete...");
+                    await Task.Delay(30000);
+                }
+                else
+                {
+                    isCompleted = true;
+                }
+                
+            }
+
+
 
         }
 

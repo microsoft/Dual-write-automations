@@ -45,11 +45,12 @@ namespace DWLibary
             None = 0,
             Stopped = 1,
             InitialSync = 2,
-            
+            CatchUp = 3,
             Running = 4,
             Paused = 5,
             //Paused = 4,
             NotRunning = 6,
+            
             Keep = 99,
             All = 100
         };
