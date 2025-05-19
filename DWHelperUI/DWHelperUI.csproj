@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Version>1.0.10</Version>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>LogoFinal.ico</ApplicationIcon>
