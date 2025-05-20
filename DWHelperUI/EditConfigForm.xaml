@@ -72,7 +72,11 @@ Grid.Row="0"/>
 
             <StackPanel Margin="20 10" Orientation="Vertical" Grid.Column="0" Grid.Row="1">
                     <TextBlock Text="Application settings"  FontSize="13" Margin="0 0 0 8"/>
-                    <DataGrid  Grid.Column="0" Grid.Row="4" x:Name="appSettings" IsReadOnly="False" CanUserAddRows="false">
+                <DataGrid   GridLinesVisibility="All" Grid.Column="0" Grid.Row="4" x:Name="appSettings" IsReadOnly="False" CanUserAddRows="false">
+                    <DataGrid.Resources>
+                        <SolidColorBrush x:Key="DataGridHorizontalGridLinesBrush" Color="Gray"/>
+                        <SolidColorBrush x:Key="DataGridVerticalGridLinesBrush" Color="Gray"/>
+                    </DataGrid.Resources>
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
                             <Style.Triggers>
@@ -95,7 +99,11 @@ Grid.Row="0"/>
 
                 <StackPanel Margin="20 10" Orientation="Vertical" Grid.Column="0" Grid.Row="2" >
                     <TextBlock Text="ADO Wiki upload settings"  FontSize="13" Margin="0 0 0 8"/>
-                    <DataGrid  Grid.Column="0" Grid.Row="4" x:Name="adoSettings" IsReadOnly="False" CanUserAddRows="false">
+                <DataGrid  GridLinesVisibility="All"  Grid.Column="0" Grid.Row="4" x:Name="adoSettings" IsReadOnly="False" CanUserAddRows="false">
+                    <DataGrid.Resources>
+                        <SolidColorBrush x:Key="DataGridHorizontalGridLinesBrush" Color="Gray"/>
+                        <SolidColorBrush x:Key="DataGridVerticalGridLinesBrush" Color="Gray"/>
+                    </DataGrid.Resources>
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
                             <Style.Triggers>
@@ -117,7 +125,11 @@ Grid.Row="0"/>
 
                 <StackPanel Margin="20 10" Orientation="Vertical" Grid.Column="0" Grid.Row="3">
                     <TextBlock Text="Solutions"  FontSize="13" Margin="0 0 0 8"/>
-                    <DataGrid  Grid.Column="0" Grid.Row="4" x:Name="solutions" IsReadOnly="False" CanUserAddRows="true">
+                <DataGrid  GridLinesVisibility="All" Grid.Column="0" Grid.Row="4" x:Name="solutions" IsReadOnly="False" CanUserAddRows="true">
+                    <DataGrid.Resources>
+                        <SolidColorBrush x:Key="DataGridHorizontalGridLinesBrush" Color="Gray"/>
+                        <SolidColorBrush x:Key="DataGridVerticalGridLinesBrush" Color="Gray"/>
+                    </DataGrid.Resources>
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
                             <Style.Triggers>
@@ -138,7 +150,11 @@ Grid.Row="0"/>
 
                 <StackPanel Margin="20 10" Orientation="Vertical" Grid.Column="0" Grid.Row="4">
                     <TextBlock Text="Groups"  FontSize="13" Margin="0 0 0 8"/>
-                    <DataGrid  Grid.Column="0" Grid.Row="4" x:Name="groups" IsReadOnly="False" CanUserAddRows="true" CanUserResizeColumns="True">
+                <DataGrid  GridLinesVisibility="All"  Grid.Column="0" Grid.Row="4" x:Name="groups" IsReadOnly="False" CanUserAddRows="true" CanUserResizeColumns="True">
+                    <DataGrid.Resources>
+                        <SolidColorBrush x:Key="DataGridHorizontalGridLinesBrush" Color="Gray"/>
+                        <SolidColorBrush x:Key="DataGridVerticalGridLinesBrush" Color="Gray"/>
+                    </DataGrid.Resources>
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
                             <Style.Triggers>
@@ -199,9 +215,14 @@ Grid.Row="0"/>
 
                 </StackPanel>
                 <StackPanel Margin="20 10" Grid.Column="0" Grid.Row="6" HorizontalAlignment="Left" Orientation="Horizontal">
-                <DataGrid x:Name="mapConfig" Grid.Column="0" Grid.Row="6" IsReadOnly="False" MinWidth="900"  MaxHeight="500" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MaxWidth="1000" FontSize="12">
+                <DataGrid x:Name="mapConfig" GridLinesVisibility="All" Grid.Column="0" Grid.Row="6" IsReadOnly="False" MinWidth="900"  MaxHeight="500" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MaxWidth="1000" FontSize="12">
+                    <DataGrid.Resources>
+                        <SolidColorBrush x:Key="DataGridHorizontalGridLinesBrush" Color="Gray"/>
+                        <SolidColorBrush x:Key="DataGridVerticalGridLinesBrush" Color="Gray"/>
+                    </DataGrid.Resources>
                     <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
+                        <Style TargetType="DataGridRow"
+                             >
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Highlight}" Value="True">
                                     <Setter Property="Background" Value="Yellow" />
