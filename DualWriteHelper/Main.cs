@@ -13,10 +13,6 @@ using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.Services.Common.CommandLine;
 using Serilog;
 using Microsoft.Extensions.Logging.ApplicationInsights;
-using OpenQA.Selenium.DevTools.V134.Runtime;
-
-
-
 #if DEBUG
 
 //args = new string[] {"-u", "username/clientId", "-p" , "password/secret",
