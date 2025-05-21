@@ -157,9 +157,8 @@ namespace DWHelper
 
             }
             catch (Exception ex)
-
             {
-                logger.LogError(ex.ToString());
+                GlobalVar.addError(ex.ToString());
             }
             
             lifeTime.StopApplication();
@@ -176,9 +175,9 @@ namespace DWHelper
 
         private void checkEdgeVersionAndRetrieveToken()
         {
-
             EdgeUniversal uni = new EdgeUniversal(logger);
             uni.getToken();
+            
         }
         
 

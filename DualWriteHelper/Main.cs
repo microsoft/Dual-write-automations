@@ -13,9 +13,6 @@ using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.Services.Common.CommandLine;
 using Serilog;
 using Microsoft.Extensions.Logging.ApplicationInsights;
-
-
-
 #if DEBUG
 
 //args = new string[] {"-u", "username/clientId", "-p" , "password/secret",
@@ -92,9 +89,19 @@ if(argsHandler.parsedOptions.logLevel != null && argsHandler.parsedOptions.logLe
 Console.WriteLine($"LogLevel {level}");
 GlobalVar.initConfig();
 
-CreateHostBuilderv2(args, level).Build().Run();
+//CreateHostBuilderv2(args, level).Build().Run();
+
+var host = CreateHostBuilderv2(args, level).Build();
 
 
+using(host)
+{
+    await host.RunAsync();
+}
+
+Environment.Exit(0);
+//using var host = CreateHostBuilderv2(args, level).Build();
+//host.Run();
 
 
 
