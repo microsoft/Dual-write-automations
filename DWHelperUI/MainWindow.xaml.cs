@@ -34,7 +34,6 @@ using MessageBox = Wpf.Ui.Controls.MessageBox;
 using static DWLibary.DWEnums;
 using Version = System.Version;
 using Microsoft.TeamFoundation.Test.WebApi;
-using static OpenQA.Selenium.BiDi.Modules.BrowsingContext.ClipRectangle;
 
 namespace DWHelperUI
 {

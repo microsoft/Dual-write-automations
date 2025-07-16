@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V136.Network;
-using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V136.DevToolsSessionDomains;
+using OpenQA.Selenium.DevTools.V138.Network;
+using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V138.DevToolsSessionDomains;
 using DWLibary;
 using OpenQA.Selenium;
 using OpenQA.Selenium.DevTools;
@@ -270,7 +270,7 @@ namespace DWLibary
 
                     using (var client = new WebClient())
                     {
-                        client.DownloadFile("https://msedgedriver.azureedge.net/" + version + "/" + drivername, driverfolder + "\\" + drivername);
+                        client.DownloadFile("https://msedgedriver.microsoft.com/" + version + "/" + drivername, driverfolder + "\\" + drivername);
                     }
                     if (File.Exists(edgeDriverPath))
                         File.Delete(edgeDriverPath);
