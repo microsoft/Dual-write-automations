@@ -6,7 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
-    
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+
     <!--<PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>-->
