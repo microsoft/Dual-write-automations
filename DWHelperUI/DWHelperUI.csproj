@@ -2,11 +2,12 @@
 
   <PropertyGroup>
     <Version>1.0.12</Version>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net9.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>LogoFinal.ico</ApplicationIcon>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <!--<PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>-->
@@ -29,8 +30,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DualWriteHelper\DWHelperCMD.csproj" />
-    <ProjectReference Include="..\DWLibary\DWLibary.csproj" />
+        <ProjectReference Include="..\DualWriteHelper\DWHelperCMD.csproj">
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\DWLibary\DWLibary.csproj">
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -48,4 +53,14 @@
     </None>
   </ItemGroup>
 
+<!-- Force copy dependencies from referenced projects -->
+  <Target Name="CopyProjectReferenceDependencies" AfterTargets="Build">
+    <ItemGroup>
+      <DWLibaryFiles Include="..\DWLibary\bin\$(Configuration)\net9.0\*.dll" Exclude="..\DWLibary\bin\$(Configuration)\net9.0\DWLibary.dll" />
+      <DWHelperCMDFiles Include="..\DualWriteHelper\bin\$(Configuration)\net9.0\*.dll" Exclude="..\DualWriteHelper\bin\$(Configuration)\net9.0\DWHelperCMD.dll" />
+    </ItemGroup>
+  
+    <Copy SourceFiles="@(DWLibaryFiles)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(DWHelperCMDFiles)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+  </Target>
 </Project>
