@@ -59,6 +59,22 @@ The zip is excluded from git via `.gitignore`.
 
 Upload `DWHelper.zip` to the release target (GitHub Releases, SharePoint, etc.).
 
+## A note on antivirus false positives
+
+This tool automates browser sign-in (entering username/password/MFA codes with Selenium) and inspects
+network traffic to capture the resulting OAuth token, then stores credentials locally using DPAPI
+(`ProtectedData`) encryption. These behaviors are legitimate and necessary for unattended Dual-write
+setup, but they resemble heuristics some antivirus engines use to flag credential-harvesting/downloader
+malware (e.g. Windows Defender's `Trojan:Win32/Suschil!rfn`), which can result in a false-positive
+detection of the compiled binary (see [#71](https://github.com/microsoft/Dual-write-automations/issues/71)).
+
+If your antivirus flags a release build:
+- Verify the file hash against the one published with the GitHub release before running it.
+- If you still have concerns, build the tool yourself from source following the steps above.
+- Report suspected false positives to your antivirus vendor (e.g. via the
+  [Microsoft Defender submission portal](https://www.microsoft.com/en-us/wdsi/filesubmission)) so the
+  detection can be reviewed.
+
 ## Release History
 
 | Version | Date       | Notes |
