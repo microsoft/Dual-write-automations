@@ -18,7 +18,6 @@ using Newtonsoft.Json;
 using DWLibary.Struct;
 using System.Diagnostics;
 using System.IO.Compression;
-using System.Net;
 using System.Runtime.InteropServices;
 
 
@@ -269,9 +268,10 @@ namespace DWLibary
                     if (File.Exists(edgeDriverPath))
                         File.Delete(edgeDriverPath);
 
-                    using (var client = new WebClient())
+                    using (var client = new HttpClientWithRetry())
                     {
-                        client.DownloadFile("https://msedgedriver.microsoft.com/" + version + "/" + drivername, driverfolder + "\\" + drivername);
+                        byte[] driverBytes = client.GetByteArrayAsync("https://msedgedriver.microsoft.com/" + version + "/" + drivername).GetAwaiter().GetResult();
+                        File.WriteAllBytes(Path.Combine(driverfolder, drivername), driverBytes);
                     }
                     if (File.Exists(edgeDriverPath))
                         File.Delete(edgeDriverPath);
