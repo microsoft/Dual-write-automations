@@ -162,27 +162,27 @@ namespace DWLibary.Engines
 
             //headers
             content += $"## Map details {Environment.NewLine}{Environment.NewLine}";
-            content += $"| **Details** |  | {Environment.NewLine}";
+            content += $"| **Details** |  |{Environment.NewLine}";
             content += $"|--|--|{Environment.NewLine}";
 
             //{Environment.NewLine}
             string versionStr = $"{currentMap.detail.template.version.major}.{currentMap.detail.template.version.minor}.{currentMap.detail.template.version.build}.{currentMap.detail.template.version.revision}";
 
 
-            content += $"| **FO Entity** | {EscapeSpecialCharacters(getFOEntity())} | {Environment.NewLine}";
-            content += $"| **CE Table** | {EscapeSpecialCharacters(getCEEntity())} | {Environment.NewLine}";
-            content += $"| **Version** | {versionStr} | {Environment.NewLine}";
-            content += $"| **Publisher** | {EscapeSpecialCharacters(currentMap.detail.template.author)}{Environment.NewLine}";
-            content += $"| **Description** |{EscapeSpecialCharacters(currentMap.detail.template.description)} | {Environment.NewLine}";
-            content += $"| **Direction** | {DWEnums.DescriptionAttr<DWEnums.DWSyncDirection>(getSyncDirection())} {Environment.NewLine}";
-            content += $" **Integration key** | {await common.getCurrentKeys(currentMap)}{Environment.NewLine}";
+            content += $"| **FO Entity** | {EscapeSpecialCharacters(getFOEntity())} |{Environment.NewLine}";
+            content += $"| **CE Table** | {EscapeSpecialCharacters(getCEEntity())} |{Environment.NewLine}";
+            content += $"| **Version** | {versionStr} |{Environment.NewLine}";
+            content += $"| **Publisher** | {EscapeSpecialCharacters(currentMap.detail.template.author)} |{Environment.NewLine}";
+            content += $"| **Description** | {EscapeSpecialCharacters(currentMap.detail.template.description)} |{Environment.NewLine}";
+            content += $"| **Direction** | {DWEnums.DescriptionAttr<DWEnums.DWSyncDirection>(getSyncDirection())} |{Environment.NewLine}";
+            content += $"| **Integration key** | {await common.getCurrentKeys(currentMap)} |{Environment.NewLine}";
             content += $"| **FO Filter** | {EscapeSpecialCharacters(common.getSourceFilter())} |{Environment.NewLine}";
             content += $"| **CE Filter** | {EscapeSpecialCharacters(common.getDestinationFilter())} |{Environment.NewLine}";
 
             content += $"{Environment.NewLine}";
 
             content += $"## Field Mappings {Environment.NewLine}{Environment.NewLine}";
-            content += $"| FO Column | Direction | CE Column | FO type | CE type | Value Map | Default value {Environment.NewLine}";
+            content += $"| FO Column | Direction | CE Column | FO type | CE type | Value Map | Default value |{Environment.NewLine}";
             content += $"|--|--|--|--|--|--|--|{Environment.NewLine}";
 
             
@@ -190,7 +190,7 @@ namespace DWLibary.Engines
 
             foreach(var data in common.curFieldMapping.entityMappingTasks[0].legs[0].fieldMappings)
             {
-                content += $"| {data.sourceField} | {DWEnums.DescriptionAttr<DWEnums.DWSyncDirection>(data.syncDirection)} | {data.destinationField} | {getFOFieldType(data)} | {getCEFieldType(data)} | {getValueMapDefaultValue(data, false)} | {getValueMapDefaultValue(data, true)}{Environment.NewLine}";
+                content += $"| {data.sourceField} | {DWEnums.DescriptionAttr<DWEnums.DWSyncDirection>(data.syncDirection)} | {data.destinationField} | {getFOFieldType(data)} | {getCEFieldType(data)} | {getValueMapDefaultValue(data, false)} | {getValueMapDefaultValue(data, true)} |{Environment.NewLine}";
             }
 
             content += valueMapContent;
@@ -224,8 +224,8 @@ namespace DWLibary.Engines
             string content = String.Empty;
 
 
-            content += $"| FO Entity | CE Entity | Link | Direction | Version | Publisher{Environment.NewLine}";
-            content += $"|--|--|--|--|--|--| {Environment.NewLine}";
+            content += $"| FO Entity | CE Entity | Link | Direction | Version | Publisher |{Environment.NewLine}";
+            content += $"|--|--|--|--|--|--|{Environment.NewLine}";
 
             wikiOverviewList.Reverse();
 
@@ -239,7 +239,7 @@ namespace DWLibary.Engines
                     // link = HttpUtility.UrlEncode(link);
                     link = link.Replace(" ", "-");
 
-                    content += $"|{map.FOEntity} | {map.CEEntity} | [{map.FOEntity} - {map.CEEntity}]({link}) | {DWEnums.DescriptionAttr(map.syncDirection)} | {map.Version} | {map.Publisher} {Environment.NewLine}";
+                    content += $"| {map.FOEntity} | {map.CEEntity} | [{map.FOEntity} - {map.CEEntity}]({link}) | {DWEnums.DescriptionAttr(map.syncDirection)} | {map.Version} | {map.Publisher} |{Environment.NewLine}";
                 }
                 catch ( Exception ex )
                 {
@@ -278,13 +278,13 @@ namespace DWLibary.Engines
 
                 valueMapContent += $"## {header}{Environment.NewLine}";
 
-                valueMapContent += $"| FO Value | CE Value {Environment.NewLine}";
-                valueMapContent += $"|--|--| {Environment.NewLine}";
+                valueMapContent += $"| FO Value | CE Value |{Environment.NewLine}";
+                valueMapContent += $"|--|--|{Environment.NewLine}";
 
                 foreach (var value in transfromObj.valueMap)
                 {
 
-                    valueMapContent += $"| {value.Key} | {value.Value}| {Environment.NewLine}";
+                    valueMapContent += $"| {value.Key} | {value.Value} |{Environment.NewLine}";
                     // string test = "sdd";
                     //value.valueMap.ke
                 }

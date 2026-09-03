@@ -12,6 +12,7 @@ using System.Collections.Specialized;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,7 +23,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.Xml.Linq;
+using MessageBox = Wpf.Ui.Controls.MessageBox;
+using MessageBoxResult = Wpf.Ui.Controls.MessageBoxResult;
 
 namespace DWHelperUI
 {
@@ -33,10 +37,13 @@ namespace DWHelperUI
     {
         public string configName { get; set; }
         ObservableCollection<MapConfig> mapConfigsContent;
+        private bool closeConfirmed;
+        private bool closePromptActive;
 
         public EditConfigForm(string configName)
         {
             InitializeComponent();
+            WindowSizeHelper.FitToWorkArea(this);
             this.configName = configName;
 
             initConfig();
@@ -104,19 +111,9 @@ namespace DWHelperUI
 
             foreach (var prop in properties)
             {
-                dynamic column = new DataGridTextColumn();
+                DataGridColumn column = createColumn(prop);
 
-
-
-                if (prop.Name == "executionMode")
-                {
-                    column = new DataGridTextColumn();
-                }
-
-
-
-                column.Binding = new Binding(prop.Name);
-                column.Header = prop.Name;
+                column.Header = prettifyHeader(prop.Name);
 
                 if (typeof(T).IsAssignableFrom(prop.DeclaringType) && prop.IsDefined(typeof(ConfigurationPropertyAttribute), false))
                 {
@@ -128,6 +125,62 @@ namespace DWHelperUI
                 }
                 _grid.Columns.Add(column);
             }
+        }
+
+        private DataGridColumn createColumn(PropertyInfo prop)
+        {
+            Type type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+
+            if (type == typeof(bool))
+                return new DataGridCheckBoxColumn()
+                {
+                    Binding = new Binding(prop.Name),
+                    ElementStyle = (Style)FindResource("ConfigCheckBoxDisplay"),
+                    EditingElementStyle = (Style)FindResource("ConfigCheckBoxEdit")
+                };
+
+            if (type.IsEnum)
+                return createComboColumn(prop, Enum.GetValues(type));
+
+            if (prop.DeclaringType == typeof(MapConfig) && prop.Name == "group")
+                return createComboColumn(prop, getGroupNames());
+
+            return new DataGridTextColumn() { Binding = new Binding(prop.Name) };
+        }
+
+        private DataGridComboBoxColumn createComboColumn(PropertyInfo prop, System.Collections.IEnumerable values)
+        {
+            return new DataGridComboBoxColumn()
+            {
+                ItemsSource = values,
+                SelectedItemBinding = new Binding(prop.Name),
+                ElementStyle = (Style)FindResource("ConfigComboBoxDisplay"),
+                EditingElementStyle = (Style)FindResource("ConfigComboBoxEdit")
+            };
+        }
+
+        //Values already used by a map are added as well, so nothing gets lost when a group is missing.
+        private List<string> getGroupNames()
+        {
+            List<string> ret = GlobalVar.dwSettings.Groups.Cast<Group>().Select(x => x.name).ToList();
+
+            foreach (MapConfig map in GlobalVar.dwSettings.MapConfigs.Cast<MapConfig>())
+            {
+                if (!string.IsNullOrEmpty(map.group) && !ret.Contains(map.group))
+                    ret.Add(map.group);
+            }
+
+            return ret;
+        }
+
+        private static string prettifyHeader(string propertyName)
+        {
+            if (string.IsNullOrEmpty(propertyName))
+                return propertyName;
+
+            string spaced = System.Text.RegularExpressions.Regex.Replace(propertyName, "(?<=[a-z0-9])([A-Z])", " $1");
+
+            return char.ToUpper(spaced[0], CultureInfo.CurrentCulture) + spaced.Substring(1);
         }
 
         private void getMapsGridData()
@@ -191,18 +244,68 @@ namespace DWHelperUI
 
         }
 
+        // ConfigurationElement hashes by value, so an edited row can never be removed from the WPF selection
+        // storage again. Keep the item out of that storage while it is being changed.
+        private void dataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            ((DataGrid)sender).UnselectAll();
+        }
+
+        private void dataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.EditAction != DataGridEditAction.Commit)
+                return;
+
+            DataGrid grid = (DataGrid)sender;
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                object current = grid.CurrentItem;
+                grid.UnselectAll();
+
+                if (current != null && current != CollectionView.NewItemPlaceholder && grid.Items.Contains(current))
+                    grid.SelectedItem = current;
+            }), DispatcherPriority.Background);
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Do you want to save your settings before closing?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            switch (result)
+            if (closeConfirmed)
+                return;
+
+            // The Fluent message box is async, so cancel this pass and close again once the user answered.
+            e.Cancel = true;
+
+            if (closePromptActive)
+                return;
+
+            closePromptActive = true;
+            _ = Dispatcher.BeginInvoke(new Func<Task>(confirmAndClose), DispatcherPriority.Background);
+        }
+
+        private async Task confirmAndClose()
+        {
+            try
             {
-                case MessageBoxResult.Yes:
-                    // Save settings and continue closing the window
+                MessageBox box = new MessageBox();
+                box.Owner = this;
+                box.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                box.Title = "Confirm";
+                box.Content = "Do you want to save your settings before closing?";
+                box.PrimaryButtonText = "Save";
+                box.CloseButtonText = "Don't save";
+
+                MessageBoxResult result = await box.ShowDialogAsync();
+
+                if (result == MessageBoxResult.Primary)
                     saveSettings();
-                    break;
-                case MessageBoxResult.No:
-                    // Do not save settings and continue closing the window
-                    break;
+
+                closeConfirmed = true;
+                Close();
+            }
+            finally
+            {
+                closePromptActive = false;
             }
         }
 

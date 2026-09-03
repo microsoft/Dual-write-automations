@@ -221,7 +221,8 @@ namespace DWLibary
             if (maxThreads == 1)
                 executionMode = DWEnums.ExecutionMode.sequential;
 
-            //readLoginTokens();  //Do not make this anymore, can keep it in memory but not on disk 
+            //Tokens are only cached in memory, remove leftovers written by older versions
+            purgeLegacyTokenFile();
 
             if (savedTokens == null)
                 savedTokens = new List<LoginData>();
@@ -303,8 +304,6 @@ namespace DWLibary
             loginData.environment = foEnv;
 
             savedTokens.Add(GlobalVar.loginData);
-            //writeLoginTokens();  //Do not make this anymore, can keep it in memory but not on disk 
-
 
         }
 
@@ -348,40 +347,13 @@ namespace DWLibary
 
             }
         }
-        //Do not make this anymore, can keep it in memory but not on disk 
-        public static void writeLoginTokens()
+        //Tokens are cached in memory only, older versions stored them next to the executable.
+        public static void purgeLegacyTokenFile()
         {
             try
             {
-
-                var base64 = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(savedTokens));
-
-                using (StreamWriter sw = new StreamWriter(@"tokens.txt"))
-                {
-                    sw.WriteLine(Convert.ToBase64String(base64));
-                }
-            }
-            catch(Exception ex)
-            {
-
-            }
-        }
-        //Do not make this anymore, can keep it in memory but not on disk 
-        public static void readLoginTokens()
-        {
-            try
-            {
-
-               
-
-                using (StreamReader sr = new StreamReader(@"tokens.txt"))
-                {
-                    var bytes = Convert.FromBase64String(sr.ReadToEnd());
-
-                    var decodedString = Encoding.UTF8.GetString(bytes);
-
-                    savedTokens = JsonConvert.DeserializeObject<List<LoginData>>(decodedString);
-                }
+                if (File.Exists(@"tokens.txt"))
+                    File.Delete(@"tokens.txt");
             }
             catch (Exception ex)
             {

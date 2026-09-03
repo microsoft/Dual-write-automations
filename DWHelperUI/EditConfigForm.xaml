@@ -23,7 +23,7 @@
  
     xmlns:xaml="clr-namespace:DWHelperUI"
         xmlns:props="clr-namespace:DWHelperUI.Properties" xmlns:System="clr-namespace:System;assembly=System.Runtime"
-Width="1150" Height="790" MinWidth="1150" MinHeight="790"
+Width="1150" Height="790" MinWidth="700" MinHeight="400"
     d:DesignHeight="1100"
         Closing="Window_Closing"
     d:DesignWidth="1150"
@@ -37,219 +37,125 @@ Width="1150" Height="790" MinWidth="1150" MinHeight="790"
     mc:Ignorable="d">
 
 
-        <!--<ScrollViewer VerticalScrollBarVisibility="Auto">
-            --><!-- Your form content here -->
-            <ScrollViewer VerticalScrollBarVisibility="Auto" >
-            <Grid>
+    <ui:FluentWindow.Resources>
+        <!-- The DataGrid column editors fall back to the framework default look, so re-apply the Fluent styles. -->
+        <Style x:Key="ConfigComboBoxDisplay" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+        <Style x:Key="ConfigComboBoxEdit" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
 
-                <Grid.ColumnDefinitions>
+        <Style x:Key="ConfigCheckBoxDisplay" TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="Focusable" Value="False"/>
+        </Style>
 
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
+        <Style x:Key="ConfigCheckBoxEdit" TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
 
-                </Grid.ColumnDefinitions>
+        <Style x:Key="ConfigDataGrid" TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+            <Setter Property="CanUserResizeColumns" Value="True"/>
+            <Setter Property="ColumnWidth" Value="*"/>
+            <Setter Property="MinColumnWidth" Value="120"/>
+            <Setter Property="MaxHeight" Value="320"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+        </Style>
+    </ui:FluentWindow.Resources>
 
-                    <!--<Button Click="Close_Click" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="20" Grid.Column="3" Margin="0,0,10,10">
-                        <Path Data="M 0 0 L 10 10 M 0 10 L 10 0" Stroke="Black" StrokeThickness="2"></Path>
-                    </Button>-->
-                    <!--<TextBlock Text="Modify Configuration" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20 0 0 2" FontSize="16" FontWeight="SemiBold" />-->
-            <ui:TitleBar Grid.ColumnSpan="4" FontWeight="Bold" FontSize="16"
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar FontWeight="Bold" FontSize="16"
 Title="Modify Configuration"
 Grid.Row="0"/>
 
-            <StackPanel Margin="20 10" Orientation="Vertical" Grid.Column="0" Grid.Row="1">
-                    <TextBlock Text="Application settings"  FontSize="13" Margin="0 0 0 8"/>
-                <DataGrid   GridLinesVisibility="All" Grid.Column="0" Grid.Row="4" x:Name="appSettings" IsReadOnly="False" CanUserAddRows="false">
-                    <DataGrid.Resources>
-                        <SolidColorBrush x:Key="DataGridHorizontalGridLinesBrush" Color="Gray"/>
-                        <SolidColorBrush x:Key="DataGridVerticalGridLinesBrush" Color="Gray"/>
-                    </DataGrid.Resources>
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Highlight}" Value="True">
-                                    <Setter Property="Background" Value="Yellow" />
-                                </DataTrigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="Gray" />
-                                    <Setter Property="BorderBrush" Value="Gray" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.RowStyle>
-                    <!--<DataGridTextColumn Header="Column 1" Binding="{Binding Key}" />
-                <DataGridTextColumn Header="Column 2" Binding="{Binding Value}" />-->
-                    </DataGrid>
-                </StackPanel>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="20 0 20 0">
+            <StackPanel Orientation="Vertical" Margin="0 10 0 20">
 
+                <ui:CardExpander Margin="0 0 0 12" IsExpanded="False">
+                    <ui:CardExpander.Header>
+                        <TextBlock Text="Application settings" FontSize="14" FontWeight="SemiBold"/>
+                    </ui:CardExpander.Header>
+                    <DataGrid x:Name="appSettings" Style="{StaticResource ConfigDataGrid}" IsReadOnly="False" CanUserAddRows="false" BeginningEdit="dataGrid_BeginningEdit" CellEditEnding="dataGrid_CellEditEnding"/>
+                </ui:CardExpander>
 
+                <ui:CardExpander Margin="0 0 0 12" IsExpanded="False">
+                    <ui:CardExpander.Header>
+                        <TextBlock Text="ADO Wiki upload settings" FontSize="14" FontWeight="SemiBold"/>
+                    </ui:CardExpander.Header>
+                    <DataGrid x:Name="adoSettings" Style="{StaticResource ConfigDataGrid}" IsReadOnly="False" CanUserAddRows="false" BeginningEdit="dataGrid_BeginningEdit" CellEditEnding="dataGrid_CellEditEnding"/>
+                </ui:CardExpander>
 
-                <StackPanel Margin="20 10" Orientation="Vertical" Grid.Column="0" Grid.Row="2" >
-                    <TextBlock Text="ADO Wiki upload settings"  FontSize="13" Margin="0 0 0 8"/>
-                <DataGrid  GridLinesVisibility="All"  Grid.Column="0" Grid.Row="4" x:Name="adoSettings" IsReadOnly="False" CanUserAddRows="false">
-                    <DataGrid.Resources>
-                        <SolidColorBrush x:Key="DataGridHorizontalGridLinesBrush" Color="Gray"/>
-                        <SolidColorBrush x:Key="DataGridVerticalGridLinesBrush" Color="Gray"/>
-                    </DataGrid.Resources>
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Highlight}" Value="True">
-                                    <Setter Property="Background" Value="Yellow" />
-                                </DataTrigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="Gray" />
-                                    <Setter Property="BorderBrush" Value="Gray" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.RowStyle>
-                    <!--<DataGridTextColumn Header="Column 1" Binding="{Binding Key}" />
-                <DataGridTextColumn Header="Column 2" Binding="{Binding Value}" />-->
-                    </DataGrid>
-                </StackPanel>
+                <ui:CardExpander Margin="0 0 0 12" IsExpanded="False">
+                    <ui:CardExpander.Header>
+                        <TextBlock Text="Solutions" FontSize="14" FontWeight="SemiBold"/>
+                    </ui:CardExpander.Header>
+                    <DataGrid x:Name="solutions" Style="{StaticResource ConfigDataGrid}" IsReadOnly="False" CanUserAddRows="true" BeginningEdit="dataGrid_BeginningEdit" CellEditEnding="dataGrid_CellEditEnding"/>
+                </ui:CardExpander>
 
+                <ui:CardExpander Margin="0 0 0 12" IsExpanded="False">
+                    <ui:CardExpander.Header>
+                        <TextBlock Text="Groups" FontSize="14" FontWeight="SemiBold"/>
+                    </ui:CardExpander.Header>
+                    <DataGrid x:Name="groups" Style="{StaticResource ConfigDataGrid}" IsReadOnly="False" CanUserAddRows="true" BeginningEdit="dataGrid_BeginningEdit" CellEditEnding="dataGrid_CellEditEnding"/>
+                </ui:CardExpander>
 
-                <StackPanel Margin="20 10" Orientation="Vertical" Grid.Column="0" Grid.Row="3">
-                    <TextBlock Text="Solutions"  FontSize="13" Margin="0 0 0 8"/>
-                <DataGrid  GridLinesVisibility="All" Grid.Column="0" Grid.Row="4" x:Name="solutions" IsReadOnly="False" CanUserAddRows="true">
-                    <DataGrid.Resources>
-                        <SolidColorBrush x:Key="DataGridHorizontalGridLinesBrush" Color="Gray"/>
-                        <SolidColorBrush x:Key="DataGridVerticalGridLinesBrush" Color="Gray"/>
-                    </DataGrid.Resources>
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Highlight}" Value="True">
-                                    <Setter Property="Background" Value="Yellow" />
-                                </DataTrigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="Gray" />
-                                    <Setter Property="BorderBrush" Value="Gray" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.RowStyle>
-                    <!--<DataGridTextColumn Header="Column 1" Binding="{Binding Key}" />
-                <DataGridTextColumn Header="Column 2" Binding="{Binding Value}" />-->
-                    </DataGrid>
-                </StackPanel>
+                <ui:CardExpander Margin="0 0 0 12" IsExpanded="False">
+                    <ui:CardExpander.Header>
+                        <TextBlock Text="Map configs" FontSize="14" FontWeight="SemiBold"/>
+                    </ui:CardExpander.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
 
-                <StackPanel Margin="20 10" Orientation="Vertical" Grid.Column="0" Grid.Row="4">
-                    <TextBlock Text="Groups"  FontSize="13" Margin="0 0 0 8"/>
-                <DataGrid  GridLinesVisibility="All"  Grid.Column="0" Grid.Row="4" x:Name="groups" IsReadOnly="False" CanUserAddRows="true" CanUserResizeColumns="True">
-                    <DataGrid.Resources>
-                        <SolidColorBrush x:Key="DataGridHorizontalGridLinesBrush" Color="Gray"/>
-                        <SolidColorBrush x:Key="DataGridVerticalGridLinesBrush" Color="Gray"/>
-                    </DataGrid.Resources>
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Highlight}" Value="True">
-                                    <Setter Property="Background" Value="Yellow" />
-                                </DataTrigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="Gray" />
-                                    <Setter Property="BorderBrush" Value="Gray" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.RowStyle>
-                    <!--<DataGridTextColumn Header="Column 1" Binding="{Binding Key}" />
-                <DataGridTextColumn Header="Column 2" Binding="{Binding Value}" />-->
-                    </DataGrid>
-                </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0 0 0 10">
+                            <TextBlock Text="Search" VerticalAlignment="Center" Margin="0 0 8 0" FontSize="13"/>
+                            <TextBox Name="SearchString" Width="240" VerticalAlignment="Center" ToolTip="Filter the map configs on any value"/>
+                            <Button Content="Filter" Margin="8 0 0 0" MinWidth="80" Click="Filter_Click"/>
+                            <Button Content="Clear" Margin="8 0 0 0" MinWidth="80" Click="ClearFilter_Click"/>
+                        </StackPanel>
 
+                        <DataGrid x:Name="mapConfig" Grid.Row="1" Grid.Column="0" Style="{StaticResource ConfigDataGrid}" IsReadOnly="False"
+                                  MaxHeight="420" CanUserSortColumns="False" BeginningEdit="dataGrid_BeginningEdit" CellEditEnding="dataGrid_CellEditEnding"/>
 
-                <!--<Grid Grid.Column="0" Grid.Row="5" >
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        
-                    </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Top" Margin="12 0 0 0">
+                            <Button Name="moveUp" MinWidth="110" Margin="0 0 0 8" Content="Move Up" Padding="5" Click="moveUp_Click"/>
+                            <Button Name="moveDown" MinWidth="110" Content="Move Down" Padding="5" Click="moveDown_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </ui:CardExpander>
 
-                    <Grid.ColumnDefinitions>
+            </StackPanel>
+        </ScrollViewer>
 
-                        <ColumnDefinition Width="auto"/>
-                        
-
-                    </Grid.ColumnDefinitions>
-                    
-                    
-                    
-                    
-                </Grid>--><!--
-                <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="5">
-                    <TextBox Name="SearchString" Width="200" Height="30"/>
-                    <Button Content="Filter" Margin="5" Height="30" Width="50" Click="Filter_Click"/>
-                    <Button Content="Clear" Margin="5" Height="30" Width="50" Click="ClearFilter_Click" />
-                </StackPanel>-->
-
-                
-                <StackPanel Margin="20 10" Orientation="Vertical" Grid.Column="0" Grid.Row="5">
-                    
-                    <TextBlock Text="Map configs"  FontSize="13" Margin="0 0 0 8"/>
-                    <StackPanel Orientation="Horizontal">
-
-                        <TextBox Name="SearchString" Width="200" Height="30"/>
-                        <Button Content="Filter" Margin="5" MinWidth="50" Click="Filter_Click"/>
-                    <Button Content="Clear" Margin="5"  MinWidth="50" Click="ClearFilter_Click" />
-                    </StackPanel>
-                    
-
-                        
-                        
-
-                </StackPanel>
-                <StackPanel Margin="20 10" Grid.Column="0" Grid.Row="6" HorizontalAlignment="Left" Orientation="Horizontal">
-                <DataGrid x:Name="mapConfig" GridLinesVisibility="All" Grid.Column="0" Grid.Row="6" IsReadOnly="False" MinWidth="900"  MaxHeight="500" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MaxWidth="1000" FontSize="12">
-                    <DataGrid.Resources>
-                        <SolidColorBrush x:Key="DataGridHorizontalGridLinesBrush" Color="Gray"/>
-                        <SolidColorBrush x:Key="DataGridVerticalGridLinesBrush" Color="Gray"/>
-                    </DataGrid.Resources>
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow"
-                             >
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Highlight}" Value="True">
-                                    <Setter Property="Background" Value="Yellow" />
-                                </DataTrigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="Gray" />
-                                    <Setter Property="BorderBrush" Value="Gray" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.RowStyle>
-                </DataGrid>
-
-                <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="110" Grid.Column="1" Grid.Row="6">
-                        <Button Name="moveUp" Margin="5" MinWidth ="100" Content="Move Up" Padding="5" Click="moveUp_Click"></Button>
-                        <Button Name="moveDown" Margin="5" MinWidth ="100" Content="Move Down" Padding="5" Click="moveDown_Click"></Button>
-
-                    </StackPanel>
-                </StackPanel>
-
-                
-
-                <Button Margin="10" x:Name="SaveSettings" Click="SaveSettings_Click" Grid.Column="0" Grid.Row="7" Content="Save Settings" VerticalAlignment="Top"/>
-
-            </Grid>
-            </ScrollViewer>
-      
-        <!--</ScrollViewer>-->
+        <Border Grid.Row="2" BorderThickness="0 1 0 0" BorderBrush="{DynamicResource ControlElevationBorderBrush}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="20 12">
+                <Button x:Name="SaveSettings" MinWidth="140" Click="SaveSettings_Click" Content="Save Settings"/>
+            </StackPanel>
+        </Border>
+    </Grid>
 
 </ui:FluentWindow>

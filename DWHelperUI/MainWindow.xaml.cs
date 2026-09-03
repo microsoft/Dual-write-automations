@@ -114,6 +114,8 @@ namespace DWHelperUI
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
+            WindowSizeHelper.FitToWorkArea(this);
+
             // Your code to execute when the window is loaded
             CheckForUpdatesAsync();
         }

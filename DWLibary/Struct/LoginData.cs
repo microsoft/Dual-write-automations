@@ -21,18 +21,30 @@ namespace DWLibary.Struct
         public int expires_in { get; set; }
         public int ext_expires_in { get; set; }
 
-        private string _access_token;
+        private readonly InMemorySecret _access_token = new InMemorySecret();
         public string access_token { 
             get { 
-                return _access_token; 
+                return _access_token.Value!; 
             } 
             set {
-                _access_token = value; 
+                _access_token.Value = value; 
                 getUsername(); 
             } 
         }
-        public string refresh_token { get; set; }
-        public string id_token { get; set; }
+
+        private readonly InMemorySecret _refresh_token = new InMemorySecret();
+        public string refresh_token
+        {
+            get { return _refresh_token.Value!; }
+            set { _refresh_token.Value = value; }
+        }
+
+        private readonly InMemorySecret _id_token = new InMemorySecret();
+        public string id_token
+        {
+            get { return _id_token.Value!; }
+            set { _id_token.Value = value; }
+        }
         public string client_info { get; set; }
         public DateTime tokenRefreshDate { get; set; }
 
@@ -46,7 +58,7 @@ namespace DWLibary.Struct
                 _accessToken = value;
                 
                 if(value.Token != null)
-                    _access_token = value.Token;
+                    _access_token.Value = value.Token;
                 //tokenRefreshDate = value.
 
             }

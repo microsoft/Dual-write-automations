@@ -12,6 +12,8 @@
     xmlns:xaml="clr-namespace:DWHelperUI"
         xmlns:props="clr-namespace:DWHelperUI.Properties" xmlns:System="clr-namespace:System;assembly=System.Runtime"
     Height="900"
+    MinWidth="900"
+    MinHeight="400"
     d:DesignHeight="1100"
     d:DesignWidth="1150"
     ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
@@ -25,6 +27,20 @@
     Loaded="OnWindowLoaded">
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--<Button Click="Close_Click" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="20" Grid.Column="3" Margin="0,0,10,10">
+                <Path Data="M 0 0 L 10 10 M 0 10 L 10 0" Stroke="Black" StrokeThickness="2"></Path>
+            </Button>-->
+        <ui:TitleBar FontWeight="Bold" FontSize="16"
+Title="Dual-write helper UI" Icon="LogoFinal.ico"
+Grid.Row="0"/>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0 0 0 10">
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -41,17 +57,11 @@
 
         <Grid.ColumnDefinitions>
 
-            <ColumnDefinition Width="300"/>
-            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*" MinWidth="280"/>
+            <ColumnDefinition Width="*" MinWidth="280"/>
 
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*" MinWidth="300"/>
         </Grid.ColumnDefinitions>
-        <!--<Button Click="Close_Click" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="20" Grid.Column="3" Margin="0,0,10,10">
-                <Path Data="M 0 0 L 10 10 M 0 10 L 10 0" Stroke="Black" StrokeThickness="2"></Path>
-            </Button>-->
-        <ui:TitleBar Grid.ColumnSpan="4" FontWeight="Bold" FontSize="16"
-Title="Dual-write helper UI" Icon="LogoFinal.ico"
-Grid.Row="0"/>
 
         <Viewbox Grid.Row="0" Grid.Column="2" Grid.RowSpan="10" VerticalAlignment="Top" Margin="20">
             <Border Width="100" Height="100" BorderBrush="DimGray" BorderThickness="0.5" CornerRadius="100" Opacity="0.2" VerticalAlignment="Top">
@@ -294,6 +304,8 @@ GroupName="themeSelect" />
 
 
         </StackPanel>
+        </Grid>
+        </ScrollViewer>
     </Grid>
 </ui:FluentWindow>
 <!--</Window>-->
