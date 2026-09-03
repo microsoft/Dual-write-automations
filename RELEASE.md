@@ -79,5 +79,7 @@ If your antivirus flags a release build:
 
 | Version | Date       | Notes |
 |---------|------------|-------|
+| 1.0.16  | 2026-08-26 | NuGet package updates, Selenium 4.43→4.47 (DevTools V147→V151, `DriverService.Start` → `StartAsync`) |
+| 1.0.15  | —          | Edge auth fix: CDP bindings V147, broader token URL match, hidden WPF console window |
 | 1.0.14  | 2026-04-15 | NuGet package updates, Selenium DevTools V143→V145, map config ordering fix |
 | 1.0.13  | —          | Previous release |
