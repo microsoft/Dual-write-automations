@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V147.Network;
-using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V147.DevToolsSessionDomains;
+using OpenQA.Selenium.DevTools.V151.Network;
+using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V151.DevToolsSessionDomains;
 using DWLibary;
 using OpenQA.Selenium;
 using OpenQA.Selenium.DevTools;
@@ -45,7 +45,7 @@ namespace DWLibary
             //disable console logging 
             //service.UseVerboseLogging = false;
             service.EnableVerboseLogging = false;
-            service.Start();
+            service.StartAsync().GetAwaiter().GetResult();
         }
 
         private void checkKillEdgeDriver()
@@ -113,8 +113,8 @@ namespace DWLibary
                 driver = new EdgeDriver(service, options);
                
                 
-                // Pin DevTools protocol to V147 to match the bundled CDP bindings (avoids version-negotiation surprises with newer Edge builds).
-                session = ((IDevTools)driver).GetDevToolsSession(new DevToolsOptions { ProtocolVersion = 147 });
+                // Pin DevTools protocol to V151 to match the bundled CDP bindings (avoids version-negotiation surprises with newer Edge builds).
+                session = ((IDevTools)driver).GetDevToolsSession(new DevToolsOptions { ProtocolVersion = 151 });
                 
                 initNetworkAdapter();
 
